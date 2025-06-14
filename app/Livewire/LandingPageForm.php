@@ -12,7 +12,6 @@ use Livewire\Attributes\Validate;
 
 class LandingPageForm extends Component
 {
-    public bool $showModal = false;
     public bool $submissionFailed = false;
     public bool $submissionSuccess = false;
     public string $failureMessage = '';
@@ -68,12 +67,6 @@ class LandingPageForm extends Component
                 }
             }
         }
-
-        if ($this->displayMode === 'modal') {
-            $this->showModal = false;
-        } else {
-            $this->showModal = true;
-        }
     }
 
     public function openModal(): void
@@ -82,13 +75,16 @@ class LandingPageForm extends Component
         $this->resetForm();
         $this->submissionFailed = false;
         $this->submissionSuccess = false;
-        $this->showModal = true;
-        $this->consent = false; // Also reset consent if needed, or default to true
+        $this->consent = false;
+        
+        // Use Flux UI modal control
+        $this->modal('landing-form')->show();
     }
 
     public function closeModal(): void
     {
-        $this->showModal = false;
+        // Use Flux UI modal control
+        $this->modal('landing-form')->close();
     }
 
     public function resetForm(): void
