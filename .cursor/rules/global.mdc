@@ -1,0 +1,75 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Your primary goal is to generate clean, efficient, and modern code for a TALL stack application (Tailwind CSS, Alpine.js, Laravel, Livewire). Adhere strictly to the latest stable versions and documented best practices for each technology.
+
+General Principles
+Enable strict typing in all PHP files with declare(strict_types=1);.
+
+Always use the latest stable versions of Laravel, Livewire, Alpine.js, and Tailwind CSS.
+
+Follow PSR-12 coding standards for all PHP code.
+
+Write clean, readable, and self-documenting code. Add comments only for complex logic.
+
+Prioritize security in all generated code: validate all incoming data, use authorization gates/policies, and escape all output.
+
+Generate code that is both performant and scalable. Use caching, queuing, and efficient database queries where appropriate.
+
+Development Workflow & Context
+Codebase Awareness: Do not make assumptions. Before generating new code, always analyze the relevant existing files to understand the context, especially for UI components, routes, and service logic.
+
+Package Management: Prioritize using packages and dependencies already present in the project. Only introduce a new package if it is absolutely necessary or provides a significant advantage over a custom implementation.
+
+Laravel
+Models: Keep models lean. Use accessors, mutators, and model scopes where appropriate. All business logic should be in service classes, not models.
+
+Eloquent: Write efficient and readable Eloquent queries. Avoid N+1 problems by using with() for eager loading.
+
+Controllers: Controllers should be thin. Their only role is to handle HTTP requests, call service classes for business logic, and return a response. Use single-action controllers for simple, dedicated endpoints.
+
+Service Classes: Place all business logic inside dedicated service classes. These services should be injected into controllers or Livewire components via the service container.
+
+Routing: Use descriptive and resource-oriented route definitions. Group related routes and apply middleware appropriately.
+
+Form Requests: Use dedicated Form Request classes for validating all incoming data from POST, PUT, and PATCH requests.
+
+Livewire
+Components: Create focused, single-responsibility components. Prefer smaller, composable components over large, monolithic ones.
+
+Properties: Use public properties for state management. Initialize them in the mount() method.
+
+Actions: Keep actions concise. They should manipulate component state and call backend services. Complex logic belongs in service classes, not Livewire actions.
+
+Validation: Use real-time validation with the #[Validate] attribute on public properties.
+
+Blade Views: Keep component Blade views clean. Use Alpine.js for simple UI interactions that don't require a server roundtrip.
+
+Efficiency: Use wire:model.live for real-time updates and wire:model.blur for fields that do not need immediate feedback to reduce server requests. Use wire:poll judiciously.
+
+UI and Component Usage
+This project has two distinct areas with different component requirements.
+
+Admin Area
+The admin area is built exclusively with Flux UI.
+
+You must reference the local documentation in the flux/ directory at the project root to find and correctly implement all UI components for the admin area.
+
+Do not use custom-styled components in the admin area. Adhere strictly to the available Flux UI components.
+
+Frontend Area
+The frontend uses primarily custom-built components.
+
+You may use specific components from Flux UI for forms and icons only.
+
+Reference the flux/ directory documentation to implement Flux UI forms and icons correctly on the frontend.
+
+All other components (layouts, cards, navigation, etc.) must be custom-built using Tailwind CSS.
+
+Tailwind CSS & Alpine.js
+Tailwind CSS: Adhere strictly to the utility-first methodology. Use classes from the project's tailwind.config.js file. Avoid writing custom CSS.
+
+
+Alpine.js: Use Alpine.js for minor, client-side interactions like toggling dropdowns, showing modals, or managing tabs. For complex state or interactions that require server communication, use Livewire.

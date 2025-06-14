@@ -1,0 +1,113 @@
+﻿REF: https://scalable.co/science-of-scale/
+🧩 Structure complète avec textes adaptés pour Nanuk Web
+________________
+
+
+🧨 HERO SECTION
+Titre principal :
+LE PLAN POUR FAIRE DÉCOLLER VOS PUBS EN LIGNE
+ Notre approche éprouvée pour aider les PME à générer plus de clients grâce à Google Ads et Meta Ads.
+Sous-titre :
+🚀 En 30 minutes, découvrez comment nos stratégies publicitaires personnalisées permettent à des entreprises comme la vôtre de générer des leads qualifiés… sans exploser leur budget.
+✅ Bouton CTA :
+[ RÉSERVER UNE CONSULTATION GRATUITE ]
+________________
+
+
+💡 SECTION 1 — Explication claire
+Titre :
+Nous avons bâti une méthode pour rentabiliser chaque dollar investi en publicité.
+Texte :
+Chez Nanuk Web, on aide les PME à transformer leurs publicités en véritable machine à générer des ventes.
+Notre méthode repose sur une combinaison stratégique de ciblage, d’optimisation et de création de messages puissants — le tout adapté à votre réalité terrain.
+Les plateformes publicitaires sont devenues complexes. Ce qui fonctionnait hier ne donne plus rien aujourd’hui. C’est pourquoi notre approche est à la fois technique, humaine et 100 % orientée performance.
+Si vous voulez arrêter de gaspiller de l’argent dans des pubs qui ne convertissent pas, réservez votre appel avec un stratège Nanuk maintenant.
+✅ Bouton CTA :
+[ JE VEUX PARLER À UN EXPERT ]
+________________
+
+
+📦 SECTION 2 — Ce qu’on va voir dans l’appel (style encadré, bullet points)
+Titre :
+Durant cette consultation gratuite, on va analyser ensemble :
+* Vos objectifs marketing à court et moyen terme
+
+* Vos campagnes actuelles (si vous en avez) ou vos opportunités inexploitées
+
+* Vos audiences et mots-clés à fort potentiel
+
+* Votre budget optimal pour des résultats concrets
+
+* Et surtout : si la publicité est vraiment le bon levier pour votre entreprise en ce moment
+
+________________
+
+
+👤 SECTION 3 — Pour qui est-ce ?
+✅ Dirigeants de PME qui veulent plus de clients sans perdre de temps
+✅ Entreprises qui veulent lancer une pub pour la première fois
+✅ Responsables marketing à la recherche d’un partenaire stratégique
+✅ Entrepreneurs frustrés de payer des pubs qui ne livrent rien
+________________
+
+
+Don’t use right now
+💬 SECTION 4 — Témoignage (exemple que tu peux remplacer par un vrai)
+“J’avais essayé de gérer mes pubs moi-même, mais je brûlais de l’argent sans comprendre pourquoi. En un appel, Nanuk m’a montré ce qui bloquait. Leur plan était clair, leur offre aussi. Je recommande sans hésiter.”
+ — Marc G., entreprise de services à Sherbrooke
+________________
+
+
+🧠 SECTION 5 — Pourquoi choisir Nanuk Web ?
+   * 💼 100+ campagnes Meta et Google optimisées pour les PME locales
+
+   * 🎯 Approche stratégique, pas juste opérationnelle
+
+   * 💬 Explication claire, sans jargon ni pression
+
+   * 🔒 Aucune obligation d’achat après l’appel
+
+________________
+
+
+📞POPUP FORM — Réservation
+Formulaire recommandé :
+      * Nom* / Prénom*
+
+      * Courriel*
+
+      * Téléphone* format( +1 (819) 238-3137
+
+      * Site web (facultatif)
+
+      * Quel est votre objectif principal?* : 
+         * Augmenter mes ventes en ligne
+         * Générer plus de leads qualifiés
+         * Améliorer la visibilité de ma marque
+         * Autre
+         * Depuis combien de temps utilisez-vous des startégies de marketing numérique?*
+         * Je débute
+         * 6 mois à 1 an
+         * 1 à 3 ans
+         * Plus de 3 ans
+         * Ëtes vous prêt à investir dans des services de marketing numérique pour atteindre vos objectifs?*
+         * Oui je suis prêt à passer à l’action
+         * Non je ne suis pas intéressé pour l’instant =  Failed
+
+
+✅ Bouton :
+[ RÉSERVER MON APPEL GRATUIT ]
+Success - Transfer to the website
+Failed - Message that we aren't a good fit
+
+
+Conscent (Already checked) and mandatory: En soumettant ce formulaire, vous consentez à ce que Nanuk Web Inc. communique avec vous par téléphone, message texte (SMS) ou courriel à des fins de suivi, d'information ou de promotion de ses services. Ce consentement est donné de façon libre et éclairée, et vous pouvez le retirer en tout temps.
+
+
+Webhook to: https://n8n.nanukweb.ca/webhook/go-nanukweb-1
+________________
+
+
+⏳ Bandeau d'urgence (optionnel)
+⚠️ Ce mois-ci, nous offrons uniquement 10 consultations gratuites aux entreprises sélectionnées. Réservez la vôtre avant que les places soient comblées.
+Failed message
