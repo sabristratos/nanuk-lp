@@ -19,21 +19,10 @@ use App\Livewire\Admin\UserProfile;
 use App\Livewire\Admin\NotificationManagement;
 use Illuminate\Support\Facades\Route;
 
-// Impersonation routes
-Route::get('/users/{user}/impersonate', [ImpersonationController::class, 'start'])->name('users.impersonate');
-Route::get('/users/impersonate/stop', [ImpersonationController::class, 'stop'])->name('users.impersonate.stop');
-
 Route::get('/profile', UserProfile::class)->name('profile');
 
 Route::middleware(['permission:view-dashboard'])->group(function () {
     Route::get('/', AnalyticsDashboard::class)->name('dashboard');
-});
-
-// User Management
-Route::middleware(['permission:view-users'])->group(function () {
-    Route::get('/users', UserIndex::class)->name('users.index');
-    Route::get('/users/create', ManageUser::class)->name('users.create')->middleware('permission:create-users');
-    Route::get('/users/{user}/edit', ManageUser::class)->name('users.edit')->middleware('permission:edit-users');
 });
 
 // Role Management
@@ -60,7 +49,6 @@ Route::get('/attachments', AttachmentManagement::class)->name('attachments')->mi
 Route::get('/activity-logs', ActivityLogManagement::class)->name('activity-logs')->middleware('permission:view-activity-logs');
 Route::middleware(['permission:view-notifications'])->group(function () {
     Route::get('/notifications', NotificationManagement::class)->name('notifications');
-    // Add create/delete notification routes here if they exist and need protection
 });
 
 // Legal
@@ -71,30 +59,23 @@ Route::middleware(['permission:view-legal-pages'])->group(function () {
 });
 
 // A/B Testing Management
-Route::middleware(['permission:view-experiments'])->group(function () {
-    Route::get('/experiments', \App\Livewire\Admin\Experiments\Index::class)->name('experiments.index');
-    Route::get('/experiments/create', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('experiments.create')->middleware('permission:create-experiments');
-    Route::get('/experiments/{experiment}/edit', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('experiments.edit')->middleware('permission:edit-experiments');
-    Route::get('/experiments/{experiment}', \App\Livewire\Admin\Experiments\ShowExperiment::class)->name('experiments.show')->middleware('permission:view-experiments');
-});
-
-// Add more admin routes here as needed 
-
-// A/B Testing
-Route::prefix('experiments')->name('experiments.')->group(function () {
+Route::prefix('experiments')->name('experiments.')->middleware(['permission:view-experiments'])->group(function () {
     Route::get('/', \App\Livewire\Admin\Experiments\Index::class)->name('index');
-    Route::get('/create', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('create');
-    Route::get('/{experiment}/edit', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('edit');
+    Route::get('/create', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('create')->middleware('permission:create-experiments');
+    Route::get('/{experiment}/edit', \App\Livewire\Admin\Experiments\ManageExperiment::class)->name('edit')->middleware('permission:edit-experiments');
     Route::get('/{experiment}', \App\Livewire\Admin\Experiments\ShowExperiment::class)->name('show');
 });
+
+// Submissions Management
 Route::prefix('submissions')->name('submissions.')->group(function () {
     Route::get('/', \App\Livewire\Admin\Submissions\Index::class)->name('index');
     Route::get('/{result}', \App\Livewire\Admin\Submissions\Show::class)->name('show');
 });
 
 // User Management
-Route::prefix('users')->name('users.')->group(function () {
-    Route::get('/', \App\Livewire\Admin\Users\Index::class)->name('index');
-    Route::get('/create', \App\Livewire\Admin\Users\ManageUser::class)->name('create');
-    Route::get('/{user}/edit', \App\Livewire\Admin\Users\ManageUser::class)->name('edit');
+Route::prefix('users')->name('users.')->middleware(['permission:view-users'])->group(function () {
+    Route::get('/', UserIndex::class)->name('index');
+    Route::get('/create', ManageUser::class)->name('create')->middleware('permission:create-users');
+    Route::get('/{user}/edit', ManageUser::class)->name('edit')->middleware('permission:edit-users');
+    Route::get('/{user}/impersonate', [ImpersonationController::class, 'start'])->name('impersonate');
 }); 
