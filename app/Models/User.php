@@ -16,6 +16,7 @@ use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property string $name
@@ -36,8 +37,6 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $roles_count
  * @property-read Collection|Attachment[] $attachments
  * @property-read int|null $attachments_count
- * @mixin \App\Models\Traits\HasTaxonomies
- * @mixin \App\Models\Traits\HasAttachments
  */
 class User extends Authenticatable implements MustVerifyEmail, HasRoles, Attachable
 {
@@ -302,5 +301,22 @@ class User extends Authenticatable implements MustVerifyEmail, HasRoles, Attacha
             }
         }
         return true;
+    }
+
+    /**
+     * Scope to include the user's last activity from sessions.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithLastActivity($query)
+    {
+        return $query->addSelect([
+            'last_activity' => DB::table('sessions')
+                ->select('last_activity')
+                ->whereColumn('user_id', 'users.id')
+                ->orderByDesc('last_activity')
+                ->limit(1)
+        ]);
     }
 }

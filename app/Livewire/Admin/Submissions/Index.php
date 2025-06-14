@@ -33,13 +33,19 @@ class Index extends Component
             ->with(['experiment', 'variation']);
 
         if ($this->sortBy === 'experiment.name') {
-            $query->join('experiments', 'experiment_results.experiment_id', '=', 'experiments.id')
-                ->orderBy('experiments.name', $this->sortDirection)
-                ->select('experiment_results.*');
+            $query->whereHas('experiment')
+                ->orderBy(
+                    \App\Models\Experiment::select('name')
+                        ->whereColumn('experiments.id', 'experiment_results.experiment_id'),
+                    $this->sortDirection
+                );
         } elseif ($this->sortBy === 'variation.name') {
-            $query->join('variations', 'experiment_results.variation_id', '=', 'variations.id')
-                ->orderBy('variations.name', $this->sortDirection)
-                ->select('experiment_results.*');
+            $query->whereHas('variation')
+                ->orderBy(
+                    \App\Models\Variation::select('name')
+                        ->whereColumn('variations.id', 'experiment_results.variation_id'),
+                    $this->sortDirection
+                );
         } else {
             $query->orderBy($this->sortBy, $this->sortDirection);
         }

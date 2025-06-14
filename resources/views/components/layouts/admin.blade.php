@@ -53,7 +53,7 @@
             {{-- New container for icon buttons --}}
             <div class="mt-4 mb-2 px-2 flex justify-between items-center space-x-2 max-lg:hidden">
                 {{-- Notifications Icon Button --}}
-                <div x-data="{ unreadCount: @js(auth()->user()?->unreadNotifications()->count() ?? 0) }" x-on:unread-notifications-count-updated.window="unreadCount = $event.detail.count" class="relative inline-block">
+                <div x-data="{ unreadCount: 0 }" x-on:unread-notifications-count-updated.window="unreadCount = $event.detail.count" class="relative inline-block">
                     <flux:button
                         variant="filled"
                         icon="bell"
@@ -158,7 +158,7 @@
             <flux:spacer />
 
             {{-- Bell Icon for SM screens --}}
-            <div x-data="{ unreadCount: @js(auth()->user()?->unreadNotifications()->count() ?? 0) }" x-on:unread-notifications-count-updated.window="unreadCount = $event.detail.count" class="relative">
+            <div x-data="{ unreadCount: 0 }" x-on:unread-notifications-count-updated.window="unreadCount = $event.detail.count" class="relative">
                 <flux:button
                     variant="ghost"
                     icon="bell"

@@ -75,9 +75,9 @@ class SendConversionToWebhook implements ShouldQueue
         
         $replacements = [
             '{visitorId}' => $event->visitorId,
-            '{experimentId}' => $event->experiment->id,
+            '{experimentId}' => (string) $event->experiment->id,
             '{experimentName}' => $event->experiment->name,
-            '{variationId}' => $event->variation->id,
+            '{variationId}' => (string) $event->variation->id,
             '{variationName}' => $event->variation->name,
             '{conversionType}' => $event->conversionType,
             '{timestamp}' => now()->toIso8601String(),

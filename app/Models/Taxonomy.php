@@ -22,6 +22,8 @@ class Taxonomy extends Model
 
     /**
      * Get the terms for the taxonomy.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Term>
      */
     public function terms()
     {

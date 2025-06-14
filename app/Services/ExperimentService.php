@@ -25,9 +25,39 @@ class ExperimentService
         $this->request = $request;
     }
 
-    public function getActiveExperiment(string $targetKey): ?Experiment
+    /**
+     * Get an active experiment by its ID
+     */
+    public function getActiveExperiment(int $experimentId): ?Experiment
     {
         \Log::debug('getActiveExperiment: START', [
+            'experimentId' => $experimentId,
+        ]);
+
+        $cacheKey = 'experiment.active.id.' . $experimentId;
+
+        $experiment = Cache::remember($cacheKey, now()->addHours(1), function () use ($experimentId) {
+            // For preview mode, we don't need to check if experiment is active
+            // This allows previewing of draft/inactive experiments
+            $query = Experiment::where('id', $experimentId)
+                ->with(['variations.modifications']);
+            
+            \Log::debug('getActiveExperiment: Querying for experiment by ID.', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+            return $query->first();
+        });
+
+        \Log::debug('getActiveExperiment: END', ['experiment_found' => $experiment ? $experiment->id : 'none']);
+
+        return $experiment;
+    }
+
+    /**
+     * Get an active experiment by target key (for route-based assignment)
+     */
+    public function getActiveExperimentByTarget(string $targetKey): ?Experiment
+    {
+        \Log::debug('getActiveExperimentByTarget: START', [
             'targetKey' => $targetKey,
         ]);
 
@@ -46,12 +76,12 @@ class ExperimentService
                 })
                 ->with(['variations.modifications']);
             
-            \Log::debug('getActiveExperiment: Querying for experiment.', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+            \Log::debug('getActiveExperimentByTarget: Querying for experiment.', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
             return $query->first();
         });
 
-        \Log::debug('getActiveExperiment: END', ['experiment_found' => $experiment ? $experiment->id : 'none']);
+        \Log::debug('getActiveExperimentByTarget: END', ['experiment_found' => $experiment ? $experiment->id : 'none']);
 
         return $experiment;
     }
@@ -86,13 +116,16 @@ class ExperimentService
         $cumulativeWeight = 0;
 
         foreach ($experiment->variations as $variation) {
+            /** @var Variation $variation */
             $cumulativeWeight += $variation->weight;
             if ($rand <= $cumulativeWeight) {
                 return $variation;
             }
         }
 
-        return $experiment->variations->first();
+        /** @var Variation|null $firstVariation */
+        $firstVariation = $experiment->variations->first();
+        return $firstVariation;
     }
 
     protected function recordView(Variation $variation): void
@@ -107,7 +140,9 @@ class ExperimentService
         }
 
         // Check if a view for this visitor already exists for this experiment
-        $existingView = $variation->experiment->views()
+        /** @var Experiment $experiment */
+        $experiment = $variation->experiment;
+        $existingView = $experiment->views()
             ->where('visitor_id', $visitorId)
             ->exists();
 
@@ -120,7 +155,7 @@ class ExperimentService
             
             // Dispatch an event so external services can hook into this.
             \App\Events\VariationAssigned::dispatch(
-                $variation->experiment,
+                $experiment,
                 $variation,
                 $visitorId
             );

@@ -42,7 +42,7 @@ class ExperimentSeeder extends Seeder
         // Modification 1: Change the title text
         $variationA->modifications()->create([
             'type' => ModificationType::Text,
-            'target' => 'home.hero.title',
+            'target' => 'hero.title',
             'payload' => [
                 'multilang_content' => [
                     'en' => 'The Future of Web Development is Here.',
@@ -54,7 +54,7 @@ class ExperimentSeeder extends Seeder
         // Modification 2: Change the background color of the hero section
         $variationA->modifications()->create([
             'type' => ModificationType::Style,
-            'target' => 'home.landing.hero', // Matches the data-key in the blade file
+            'target' => 'hero.section', // Matches the data-element-key in the blade file
             'payload' => [
                 'property' => 'backgroundColor',
                 'value' => '#1a202c', // Dark gray

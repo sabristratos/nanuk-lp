@@ -12,6 +12,8 @@ trait HasAttachments
 {
     /**
      * Get all attachments for the model.
+     *
+     * @return MorphMany<Attachment, $this>
      */
     public function attachments(): MorphMany
     {

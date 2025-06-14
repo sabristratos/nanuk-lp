@@ -27,12 +27,34 @@ export default function experimentManager(experimentData, elementKey) {
                 // If the modification's target matches the component's root key, apply the modification to the root element itself.
                 if (mod.target === elementKey) {
                     this.applyModification(this.$el, mod);
+                    return;
                 }
 
-                // Then, search for any descendant elements with the same data-key.
-                const elements = this.$el.querySelectorAll(`[data-key="${mod.target}"]`);
-                if (!elements.length && mod.target !== elementKey) {
-                    console.warn(`Experiment target element not found: [data-key="${mod.target}"]`);
+                // Search for elements with various data attributes that match the target
+                const selectors = [
+                    `[data-key="${mod.target}"]`,
+                    `[data-content-key="${mod.target}"]`,
+                    `[data-element-key="${mod.target}"]`
+                ];
+                
+                let elements = [];
+                
+                // First, search within the component scope
+                selectors.forEach(selector => {
+                    const found = this.$el.querySelectorAll(selector);
+                    elements.push(...found);
+                });
+
+                // If no elements found within component, search the entire document
+                if (!elements.length) {
+                    selectors.forEach(selector => {
+                        const found = document.querySelectorAll(selector);
+                        elements.push(...found);
+                    });
+                }
+
+                if (!elements.length) {
+                    console.warn(`Experiment target element not found with any of: ${selectors.join(', ')}`);
                     return;
                 }
 
@@ -66,7 +88,52 @@ export default function experimentManager(experimentData, elementKey) {
                     }
                     break;
                 case 'visibility':
-                    element.style.display = mod.payload.visible ? '' : 'none';
+                    // Handle both boolean and string values
+                    const isVisible = mod.payload.visible === true || mod.payload.visible === '1' || mod.payload.visible === 1;
+                    
+                    console.log('Visibility modification:', { target: mod.target, isVisible, element });
+                    
+                    if (isVisible) {
+                        element.style.display = '';
+                        element.style.removeProperty('display');
+                    } else {
+                        // Multiple approaches to ensure the element is hidden
+                        element.style.setProperty('display', 'none', 'important');
+                        element.style.setProperty('visibility', 'hidden', 'important');
+                        element.style.setProperty('opacity', '0', 'important');
+                        element.setAttribute('hidden', 'true');
+                        
+                        // Handle Alpine.js x-show conflicts
+                        if (element._x_dataStack && element._x_dataStack.length > 0) {
+                            const alpineData = element._x_dataStack[0];
+                            console.log('Alpine data found:', alpineData);
+                            if ('bannerVisible' in alpineData) {
+                                alpineData.bannerVisible = false;
+                                console.log('Set bannerVisible to false');
+                            }
+                            if ('visible' in alpineData) alpineData.visible = false;
+                            if ('show' in alpineData) alpineData.show = false;
+                        }
+                        
+                        // Also try to find and modify Alpine data via Alpine.js API
+                        if (window.Alpine && element._x_dataStack) {
+                            try {
+                                const data = window.Alpine.$data(element);
+                                if (data && 'bannerVisible' in data) {
+                                    data.bannerVisible = false;
+                                    console.log('Set Alpine bannerVisible via API');
+                                }
+                            } catch (e) {
+                                console.log('Alpine API access failed:', e);
+                            }
+                        }
+                        
+                        // Force a delay to override Alpine initialization
+                        setTimeout(() => {
+                            element.style.setProperty('display', 'none', 'important');
+                            console.log('Applied delayed visibility override');
+                        }, 100);
+                    }
                     break;
                 case 'classes':
                     if (mod.payload.classes) {

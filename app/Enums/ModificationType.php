@@ -11,6 +11,7 @@ enum ModificationType: string
     case Visibility = 'visibility';
     case Classes = 'classes';
     case Layout = 'layout';
+    case Component = 'component';
 
     public function getLabel(): string
     {
@@ -20,6 +21,7 @@ enum ModificationType: string
             self::Visibility => 'Change Visibility',
             self::Classes => 'Add Custom CSS Classes',
             self::Layout => 'Modify Component Layout',
+            self::Component => 'Change Component',
         };
     }
 

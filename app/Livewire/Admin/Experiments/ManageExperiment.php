@@ -69,13 +69,15 @@ class ManageExperiment extends Component
             $this->status = $this->experiment->status->value;
             $this->start_date = $this->experiment->start_date?->format('Y-m-d');
             $this->end_date = $this->experiment->end_date?->format('Y-m-d');
-            $this->variations = $this->experiment->variations()->with('modifications')->get()->map(function ($variation) {
+            /** @var \Illuminate\Database\Eloquent\Collection<int, \App\Models\Variation> $variationsCollection */
+            $variationsCollection = $this->experiment->variations()->with('modifications')->get();
+            $this->variations = $variationsCollection->map(function (\App\Models\Variation $variation) {
                 return [
                     'id' => $variation->id,
                     'name' => $variation->name,
                     'description' => $variation->description,
                     'weight' => $variation->weight,
-                    'modifications' => $variation->modifications->map(function ($modification) {
+                    'modifications' => $variation->modifications->map(function (\App\Models\VariationModification $modification) {
                         return [
                             'id' => $modification->id,
                             'type' => $modification->type->value,
@@ -162,6 +164,11 @@ class ManageExperiment extends Component
 
         // When type changes, reset the payload to the default for that type
         $this->variations[$variationIndex]['modifications'][$modIndex]['payload'] = $this->getDefaultPayload($value);
+        
+        // Automatically set target for Component modifications
+        if ($value === ModificationType::Component->value) {
+            $this->variations[$variationIndex]['modifications'][$modIndex]['target'] = 'form.component';
+        }
     }
     
     private function getDefaultPayload(string $type): array
@@ -169,9 +176,10 @@ class ManageExperiment extends Component
         return match ($type) {
             ModificationType::Text->value => ['multilang_content' => array_fill_keys(array_keys($this->locales), '')],
             ModificationType::Style->value => ['property' => 'color', 'value' => '#000000'],
-            ModificationType::Visibility->value => ['visible' => true],
+            ModificationType::Visibility->value => ['visible' => 1],
             ModificationType::Classes->value => ['classes' => ''],
             ModificationType::Layout->value => ['css_classes' => ''],
+            ModificationType::Component->value => ['show' => 'modal', 'position' => 'end'],
             default => [],
         };
     }
@@ -213,6 +221,7 @@ class ManageExperiment extends Component
 
                 $variationIds = [];
                 foreach ($this->variations as $variationData) {
+                    /** @var \App\Models\Variation $variation */
                     $variation = $this->experiment->variations()->updateOrCreate(
                         ['id' => $variationData['id'] ?? null],
                         [
@@ -226,6 +235,11 @@ class ManageExperiment extends Component
                     $modificationIds = [];
                     if (isset($variationData['modifications'])) {
                         foreach ($variationData['modifications'] as $modData) {
+                            // Ensure Component modifications have the correct target
+                            if ($modData['type'] === ModificationType::Component->value) {
+                                $modData['target'] = 'form.component';
+                            }
+                            
                             $modification = $variation->modifications()->updateOrCreate(
                                 ['id' => $modData['id'] ?? null],
                                 [
@@ -241,7 +255,9 @@ class ManageExperiment extends Component
                 }
                 $this->experiment->variations()->whereNotIn('id', $variationIds)->delete();
 
-                Cache::forget("content.collection.{$this->experiment->id}");
+                if ($this->experiment) {
+                    Cache::forget("content.collection.{$this->experiment->id}");
+                }
             });
 
             Flux::toast(

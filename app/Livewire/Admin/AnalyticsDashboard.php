@@ -73,56 +73,44 @@ class AnalyticsDashboard extends Component
             ->get()
             ->toArray();
 
-        // Consolidate topReferrers by hostname
+        // Consolidate topReferrers by hostname with simplified logic
         $rawReferrers = PageView::select('referrer', DB::raw('count(*) as views'))
             ->whereNotNull('referrer')
             ->where('referrer', '!=', '')
             ->groupBy('referrer')
             ->orderByDesc('views')
-            ->limit(50) // Fetch more to ensure diverse hosts after grouping
+            ->limit(50)
             ->get();
 
         $groupedReferrers = [];
         foreach ($rawReferrers as $item) {
-            if (empty($item->referrer)) {
+            $referrer = (string) $item->referrer;
+            
+            // Extract hostname using parse_url
+            $host = parse_url($referrer, PHP_URL_HOST);
+            
+            // If no host found, try to detect if it's a bare domain
+            if (empty($host) && preg_match('/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $referrer)) {
+                $host = $referrer;
+            }
+            
+            // Skip if we still can't determine a valid host
+            if (empty($host)) {
                 continue;
             }
-            // Attempt to parse the host, ensure it's a string
-            $host = parse_url((string) $item->referrer, PHP_URL_HOST);
-
-            // If host is null or empty, use the original referrer (or a placeholder)
-            if (empty($host)) {
-                // Check if it's a simple domain without scheme (e.g., "google.com")
-                // This is a basic check and might need refinement for edge cases
-                if (preg_match('/^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', (string)$item->referrer)) {
-                    $host = (string)$item->referrer;
-                } else {
-                     // If it's not a clear host, and not null/empty, keep it, otherwise skip or use 'unknown'
-                    $host = trim((string)$item->referrer);
-                }
-            }
-             // Ensure host is not excessively long if it's a full path fallback
-            $host = mb_substr((string)$host, 0, 255);
-
+            
+            // Limit host length to prevent issues
+            $host = mb_substr($host, 0, 255);
 
             if (!isset($groupedReferrers[$host])) {
-                $groupedReferrers[$host] = ['host' => $host, 'views' => 0, 'original_referrers' => []];
+                $groupedReferrers[$host] = ['host' => $host, 'views' => 0];
             }
             $groupedReferrers[$host]['views'] += $item->views;
-            // Store one of the original full referrers for the link, if needed
-            if (empty($groupedReferrers[$host]['original_referrers'])) {
-                $groupedReferrers[$host]['original_referrers'][] = (string)$item->referrer;
-            }
-        }
-        // Remove 'unknown' if it has no views or is not meaningful
-        if (isset($groupedReferrers['unknown']) && $groupedReferrers['unknown']['views'] == 0) {
-            unset($groupedReferrers['unknown']);
         }
 
-
-        usort($groupedReferrers, fn($a, $b) => $b['views'] <=> $a['views']);
+        // Sort by views and take top 10
+        uasort($groupedReferrers, fn($a, $b) => $b['views'] <=> $a['views']);
         $this->topReferrers = array_slice($groupedReferrers, 0, 10);
-
 
         $this->topBrowsers = PageView::select('browser_name', DB::raw('count(*) as views'))
             ->whereNotNull('browser_name')

@@ -88,10 +88,10 @@
                                         <flux:button 
                                             type="button" 
                                             variant="outline" 
-                                            :href="$variation['id'] ? route('home', ['experiment_id' => $experiment->id, 'variation_id' => $variation['id']]) : '#'" 
+                                            :href="$experiment?->exists ? route('home', ['experiment_id' => $experiment->id, 'variation_id' => $variation['id'] ?? 'preview_' . $index]) : '#'" 
                                             target="_blank"
-                                            :disabled="!$variation['id']"
-                                            tooltip="{{ __('Preview this variation in a new tab. The experiment must be saved first.') }}"
+                                            :disabled="!$experiment?->exists"
+                                            tooltip="{{ __('Preview this variation in a new tab. Only works after the experiment is created.') }}"
                                         >
                                             {{ __('Preview') }}
                                         </flux:button>
@@ -158,12 +158,24 @@
                                                     </flux:select>
                                 
                                                     {{-- Target Element --}}
-                                                    <flux:input
-                                                        wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.target"
-                                                        label="{{ __('Target Element') }}"
-                                                        description:trailing="Enter the data-key attribute from your Blade file (e.g., hero.title)."
-                                                        required
-                                                    />
+                                                    @if($modification['type'] !== \App\Enums\ModificationType::Component->value)
+                                                        <flux:input
+                                                            wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.target"
+                                                            label="{{ __('Target Element') }}"
+                                                            description:trailing="Enter the data-key attribute from your Blade file (e.g., hero.title)."
+                                                            required
+                                                        />
+                                                    @else
+                                                        <div class="flex items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                                                            <svg class="w-5 h-5 text-green-600 dark:text-green-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                            </svg>
+                                                            <div>
+                                                                <p class="text-sm font-medium text-green-800 dark:text-green-200">{{ __('Target: Form Component') }}</p>
+                                                                <p class="text-xs text-green-600 dark:text-green-400">{{ __('Automatically configured for form display and positioning') }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                 
                                                 <div class="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
@@ -201,8 +213,8 @@
                                 
                                                         @case(\App\Enums\ModificationType::Visibility->value)
                                                             <flux:select wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.payload.visible" label="{{ __('Visibility') }}">
-                                                                <option value="true">{{ __('Visible') }}</option>
-                                                                <option value="false">{{ __('Hidden') }}</option>
+                                                                <option value="1">{{ __('Visible') }}</option>
+                                                                <option value="0">{{ __('Hidden') }}</option>
                                                             </flux:select>
                                                             @break
                                 
@@ -212,6 +224,19 @@
                                                             
                                                         @case(\App\Enums\ModificationType::Layout->value)
                                                             <flux:textarea wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.payload.css_classes" label="{{ __('Component Root Classes') }}" description:trailing="Replaces all classes on the component's root element." />
+                                                            @break
+                                                            
+                                                        @case(\App\Enums\ModificationType::Component->value)
+                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                <flux:select wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.payload.show" label="{{ __('Display Mode') }}">
+                                                                    <option value="modal">{{ __('Modal') }}</option>
+                                                                    <option value="embedded">{{ __('Embedded') }}</option>
+                                                                </flux:select>
+                                                                <flux:select wire:model="variations.{{ $index }}.modifications.{{ $modIndex }}.payload.position" label="{{ __('Position') }}">
+                                                                    <option value="hero">{{ __('After Hero') }}</option>
+                                                                    <option value="end">{{ __('End of Page') }}</option>
+                                                                </flux:select>
+                                                            </div>
                                                             @break
                                 
                                                     @endswitch

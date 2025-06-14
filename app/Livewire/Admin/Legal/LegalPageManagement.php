@@ -105,11 +105,14 @@ class LegalPageManagement extends Component
     protected function getSortColumn(): string
     {
         $translatableAttributes = (new LegalPage())->getTranslatableAttributes();
+        
+        // Only add locale suffix for translatable attributes
         if (in_array($this->sortBy, $translatableAttributes)) {
             $locale = $this->localeFilter ?: config('app.fallback_locale');
             return $this->sortBy . '->' . $locale;
         }
 
+        // For non-translatable fields, return the column name as-is
         return $this->sortBy;
     }
 

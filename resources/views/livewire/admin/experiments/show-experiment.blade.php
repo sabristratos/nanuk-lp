@@ -57,7 +57,7 @@
                         @php
                             $totalConversions = $variation->results->count();
                             $uniqueConvertingVisitors = $variation->results()->distinct('visitor_id')->count();
-                            $views = $variation->views()->distinct('visitor_id')->count();
+                            $views = \App\Models\ExperimentView::where('variation_id', $variation->id)->count();
                             $conversionRate = $views > 0 ? ($uniqueConvertingVisitors / $views) * 100 : 0;
                         @endphp
                         <p><strong>{{ __('Unique Visitors:') }}</strong> {{ $views }}</p>

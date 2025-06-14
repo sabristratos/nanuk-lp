@@ -63,7 +63,7 @@ class TrackPageViewMiddleware
         ];
 
         foreach ($excludedPaths as $excludedPath) {
-            if ($request->fullUrlIs($excludedPath) || $request->is($excludedPath)) {
+            if ($request->is($excludedPath)) {
                 return true;
             }
         }

@@ -193,6 +193,15 @@ class UploadAttachment extends Component
             return;
         }
 
+        if (!($this->model instanceof \App\Interfaces\Attachable)) {
+            Flux::toast(
+                text: __('Model does not support attachments.'),
+                heading: __('Error'),
+                variant: 'danger'
+            );
+            return;
+        }
+
         $this->validate();
 
         $service = app(AttachmentService::class);
@@ -201,9 +210,12 @@ class UploadAttachment extends Component
             /** @var UploadedFile $uploadedFileInstance */
             $uploadedFileInstance = $this->file;
 
+            /** @var \App\Interfaces\Attachable&\Illuminate\Database\Eloquent\Model $attachableModel */
+            $attachableModel = $this->model;
+
             $attachment = $service->upload(
                 $uploadedFileInstance,
-                $this->model,
+                $attachableModel,
                 $this->collection,
                 [],
                 [

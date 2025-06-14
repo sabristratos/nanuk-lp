@@ -67,6 +67,7 @@ class ShowExperiment extends Component
             $dailyResults = $groupedResults->get($dateString, collect());
 
             foreach ($variations as $index => $variation) {
+                /** @var \App\Models\Variation $variation */
                 $field = 'variation_' . $index . '_conversions';
                 $resultForVariation = $dailyResults->firstWhere('variation_id', $variation->id);
                 $dataPoint[$field] = $resultForVariation ? $resultForVariation->conversions : 0;

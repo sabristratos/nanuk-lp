@@ -91,10 +91,32 @@ class SettingsService
             }
         }
 
-        // Clear the cache
-        $this->clearCache();
+        // Clear only the relevant cache keys
+        $this->clearSpecificCache($setting);
 
         return $result;
+    }
+
+    /**
+     * Clear cache for a specific setting
+     *
+     * @param Setting $setting
+     */
+    protected function clearSpecificCache(Setting $setting): void
+    {
+        // Clear the main settings cache
+        Cache::forget(self::CACHE_KEY);
+        
+        // Clear group cache if the setting belongs to a group
+        $group = $setting->group;
+        if ($group) {
+            Cache::forget("settings.group.{$group->slug}");
+        }
+        
+        // Clear public cache if it's a public setting
+        if ($setting->is_public) {
+            Cache::forget('settings.public');
+        }
     }
 
     /**
@@ -136,7 +158,11 @@ class SettingsService
         // Clear group caches
         $groupSlugs = Setting::with('group')
             ->get()
-            ->pluck('group.slug')
+            ->map(function (Setting $setting) {
+                $group = $setting->group;
+                return $group?->slug;
+            })
+            ->filter()
             ->unique();
 
         foreach ($groupSlugs as $slug) {

@@ -16,6 +16,7 @@ class LandingPageForm extends Component
     public bool $submissionFailed = false;
     public bool $submissionSuccess = false;
     public string $failureMessage = '';
+    public string $displayMode = 'modal';
     
     public ?int $experimentId = null;
     public ?int $variationId = null;
@@ -49,10 +50,30 @@ class LandingPageForm extends Component
 
     protected $listeners = ['openModal'];
 
-    public function mount(?int $experimentId = null, ?int $variationId = null): void
+    public function mount(?int $experimentId = null, ?int $variationId = null, string $displayMode = 'modal'): void
     {
         $this->experimentId = $experimentId;
         $this->variationId = $variationId;
+        $this->displayMode = $displayMode;
+
+        if ($this->experimentId && $this->variationId) {
+            $experiment = \App\Models\Experiment::find($this->experimentId);
+            if ($experiment) {
+                $variation = $experiment->variations()->find($this->variationId);
+                if ($variation) {
+                    $formModification = $variation->modifications->firstWhere('type', 'component');
+                    if ($formModification) {
+                        $this->displayMode = $formModification->payload['show'] ?? 'modal';
+                    }
+                }
+            }
+        }
+
+        if ($this->displayMode === 'modal') {
+            $this->showModal = false;
+        } else {
+            $this->showModal = true;
+        }
     }
 
     public function openModal(): void

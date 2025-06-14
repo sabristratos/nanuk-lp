@@ -23,11 +23,10 @@
                 data-content-key="hero.description">
                 🚀 En 30 minutes, découvrez comment nos stratégies publicitaires personnalisées permettent à des entreprises comme la vôtre de générer des leads qualifiés… sans exploser leur budget.
             </p>
-            <div class="hero-cta mt-12">
+            <div class="hero-cta mt-12" data-element-key="hero.cta">
                 <x-cta-button
-                    dispatch="openModal"
+                    click="scrollToForm()"
                     class="px-10 py-4 text-lg"
-                    wire:click="$dispatch('trackConversion', { experimentId: {{ $experimentData['experiment']['id'] ?? 'null' }}, variationId: {{ $experimentData['variation']['id'] ?? 'null' }} })"
                     data-content-key="hero.cta"
                 >
                     RÉSERVER UNE CONSULTATION GRATUITE

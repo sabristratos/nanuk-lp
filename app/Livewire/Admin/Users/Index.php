@@ -106,17 +106,9 @@ class Index extends Component
 
     public function render(): View
     {
-        $latestSessions = DB::table('sessions')
-            ->select('user_id', DB::raw('MAX(last_activity) as last_activity'))
-            ->whereNotNull('user_id')
-            ->groupBy('user_id');
-
         $users = User::query()
-            ->leftJoinSub($latestSessions, 'latest_sessions', function ($join) {
-                $join->on('users.id', '=', 'latest_sessions.user_id');
-            })
-            ->select('users.*', 'latest_sessions.last_activity')
             ->with(['roles'])
+            ->withLastActivity()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('email', 'like', '%' . $this->search . '%');

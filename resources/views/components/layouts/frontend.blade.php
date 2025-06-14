@@ -1,5 +1,5 @@
 <x-layouts.base :title="$title ?? null">
-    <div class="dark min-h-screen bg-zinc-950 relative isolate">
+    <div class="dark min-h-screen relative isolate">
         <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80" aria-hidden="true">
             <div
                 id="background-gradient"
@@ -45,15 +45,15 @@
         </div>
 
         <!-- Footer -->
-        <footer class="bg-zinc-900 border-t border-zinc-700/50">
+        <footer>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
                     <div class="text-sm text-zinc-400">
-                        {!! Str::of(setting('footer_copyright_text', '&copy; {year} {site_name}. All rights reserved.'))->replace('{year}', date('Y'))->replace('{site_name}', setting('site_name', config('app.name', 'Laravel'))) !!}
+                        © Nanuk Web inc.
                     </div>
                     <div class="flex items-center space-x-6">
-                        <a href="#" class="text-sm text-zinc-400 hover:text-primary-400 transition-colors duration-150 ease-in-out">Privacy Policy</a>
-                        <a href="#" class="text-sm text-zinc-400 hover:text-primary-400 transition-colors duration-150 ease-in-out">Terms of Service</a>
+                        <a href="https://nanukweb.ca/politique-de-confidentialite/" target="_blank" rel="noopener noreferrer" class="text-sm text-zinc-400 hover:text-primary-400 transition-colors duration-150 ease-in-out">Politique de Confidentialité</a>
+                        <a href="https://nanukweb.ca/conditions-utilisation/" target="_blank" rel="noopener noreferrer" class="text-sm text-zinc-400 hover:text-primary-400 transition-colors duration-150 ease-in-out">Conditions d'Utilisation</a>
                     </div>
                 </div>
             </div>
@@ -105,9 +105,29 @@
                         mainContent.style.paddingTop = `${headerHeight}px`;
                     }
                 }
-                
+
                 adjustMainContentPadding();
                 window.addEventListener('resize', adjustMainContentPadding);
+
+                // Function to scroll to form section or open modal
+                window.scrollToForm = function() {
+                    const formSection = document.getElementById('form-section');
+                    if (formSection) {
+                        const headerOffset = header.offsetHeight;
+                        const elementPosition = formSection.getBoundingClientRect().top + window.scrollY;
+                        const offsetPosition = elementPosition - headerOffset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        // If no embedded form, trigger modal
+                        if (window.Livewire) {
+                            window.Livewire.dispatch('openModal');
+                        }
+                    }
+                };
 
                 // Smooth scroll for anchor links in the header
                 document.querySelectorAll('#main-header a[href^="#"]').forEach(anchor => {
@@ -145,8 +165,8 @@
                 if (!header) console.warn('Main header (ID: main-header) not found for animation.');
                 if (typeof gsap === 'undefined') console.warn('GSAP is not defined. Header animation and smooth scroll may not work.');
                 // Fallback for main content padding if GSAP/header isn't there for some reason
-                if(header && mainContent) mainContent.style.paddingTop = `${header.offsetHeight}px`; 
+                if(header && mainContent) mainContent.style.paddingTop = `${header.offsetHeight}px`;
             }
         });
     </script>
-</x-layouts.base> 
+</x-layouts.base>

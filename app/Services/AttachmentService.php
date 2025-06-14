@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Interfaces\EncodedImageInterface;
+use Illuminate\Validation\ValidationException;
 
 class AttachmentService
 {
@@ -26,7 +27,8 @@ class AttachmentService
      * @param array<string, mixed> $meta Optional metadata.
      * @param array<string, mixed> $options Options for storage and optimization, overriding global settings.
      * @return \App\Models\Attachment The created attachment record.
-     * @throws \Exception If the attachable model does not have a key, or if file type is not allowed.
+     * @throws \Exception If the attachable model does not have a key.
+     * @throws \Illuminate\Validation\ValidationException If file type is not allowed.
      */
     public function upload(UploadedFile $file, Attachable&Model $attachable, ?string $collection = null, array $meta = [], array $options = []): Attachment
     {
@@ -70,7 +72,7 @@ class AttachmentService
      * @param array<string, mixed> $meta Optional metadata to update.
      * @param array<string, mixed> $options Options for storage and optimization, overriding global settings.
      * @return Attachment The updated attachment record.
-     * @throws \Exception If file type is not allowed.
+     * @throws \Illuminate\Validation\ValidationException If file type is not allowed.
      */
     public function replace(Attachment $attachment, UploadedFile $newFile, array $meta = [], array $options = []): Attachment
     {
@@ -98,7 +100,7 @@ class AttachmentService
      *
      * @param UploadedFile $file
      * @return void
-     * @throws \Exception If file type is not allowed.
+     * @throws \Illuminate\Validation\ValidationException If file type is not allowed.
      */
     protected function validateMimeType(UploadedFile $file): void
     {
@@ -107,7 +109,9 @@ class AttachmentService
             $allowedMimes = array_map('trim', explode(',', $allowedMimesSetting));
             $fileMime = $file->getMimeType();
             if ($fileMime === null || !in_array($fileMime, $allowedMimes, true)) {
-                throw new \Exception(__('File type not allowed: ') . ($fileMime ?? __('unknown')));
+                throw ValidationException::withMessages([
+                    'file' => __('File type not allowed: ') . ($fileMime ?? __('unknown'))
+                ]);
             }
         }
     }

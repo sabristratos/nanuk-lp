@@ -16,7 +16,7 @@ class StopImpersonation extends Component
     {
         app(ImpersonationController::class)->stop();
 
-        return redirect()->route('admin.users.index');
+        return $this->redirect(route('admin.users.index'));
     }
 
     public function render(): View

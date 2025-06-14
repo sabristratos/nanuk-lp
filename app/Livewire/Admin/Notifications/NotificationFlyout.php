@@ -26,6 +26,7 @@ class NotificationFlyout extends Component
     public function mount(): void
     {
         $this->loadNotifications();
+        $this->updateUnreadCount();
     }
 
     public function loadNotifications(): void
