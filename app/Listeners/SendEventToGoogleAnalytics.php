@@ -14,29 +14,34 @@ class SendEventToGoogleAnalytics implements ShouldQueue
 {
     use InteractsWithQueue;
 
-    private ?string $measurementId;
-    private ?string $apiSecret;
-
     public function __construct()
     {
-        $this->measurementId = setting('experiments.ga4_measurement_id');
-        $this->apiSecret = setting('experiments.ga4_api_secret');
+        // Remove database access from constructor to prevent issues during package discovery
+        // Settings will be retrieved when methods are actually called
     }
 
     public function handleVariationAssigned(VariationAssigned $event): void
     {
+        $measurementId = setting('experiments.ga4_measurement_id');
+        $apiSecret = setting('experiments.ga4_api_secret');
+
         $this->sendEvent(
             $event->visitorId,
             'view_experiment_variation',
             [
                 'experiment_name' => $event->experiment->name,
                 'variation_name' => $event->variation->name,
-            ]
+            ],
+            $measurementId,
+            $apiSecret
         );
     }
 
     public function handleConversionRecorded(ConversionRecorded $event): void
     {
+        $measurementId = setting('experiments.ga4_measurement_id');
+        $apiSecret = setting('experiments.ga4_api_secret');
+
         $this->sendEvent(
             $event->visitorId,
             'conversion',
@@ -44,18 +49,20 @@ class SendEventToGoogleAnalytics implements ShouldQueue
                 'experiment_name' => $event->experiment->name,
                 'variation_name' => $event->variation->name,
                 'conversion_type' => $event->conversionType,
-            ]
+            ],
+            $measurementId,
+            $apiSecret
         );
     }
 
-    private function sendEvent(string $clientId, string $eventName, array $params): void
+    private function sendEvent(string $clientId, string $eventName, array $params, ?string $measurementId, ?string $apiSecret): void
     {
-        if (empty($this->measurementId) || empty($this->apiSecret)) {
+        if (empty($measurementId) || empty($apiSecret)) {
             return;
         }
 
         try {
-            Http::post("https://www.google-analytics.com/mp/collect?api_secret={$this->apiSecret}&measurement_id={$this->measurementId}", [
+            Http::post("https://www.google-analytics.com/mp/collect?api_secret={$apiSecret}&measurement_id={$measurementId}", [
                 'client_id' => $clientId,
                 'events' => [
                     [
@@ -66,7 +73,7 @@ class SendEventToGoogleAnalytics implements ShouldQueue
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to send event to Google Analytics.', [
-                'measurement_id' => $this->measurementId,
+                'measurement_id' => $measurementId,
                 'error' => $e->getMessage(),
             ]);
         }
