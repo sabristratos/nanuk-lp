@@ -1,5 +1,5 @@
 <x-layouts.base :title="$title ?? null">
-    <div class="min-h-screen relative isolate">
+    <div class="dark min-h-screen relative isolate bg-zinc-900 text-white">
         <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80" aria-hidden="true">
             <div
                 id="background-gradient"
@@ -8,23 +8,23 @@
             </div>
         </div>
         <!-- Header -->
-        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out" style="transform: translateY(-100%);">
+        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-zinc-900/80 backdrop-blur-sm border-b border-zinc-800" style="transform: translateY(-100%);">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16 md:h-20">
                     <div class="flex-shrink-0">
                         @if(setting('show_logo_in_header', true))
-                            <a href="/" class="text-xl font-bold text-primary-500 hover:text-primary-400 transition-colors duration-150 ease-in-out">
+                            <a href="/" class="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors duration-150 ease-in-out">
                                 {{ setting('site_name', config('app.name', 'Laravel')) }}
                             </a>
                         @endif
                     </div>
 
                     <nav class="hidden md:flex items-center space-x-8 ml-auto">
-                        <a href="#hero" class="text-base font-medium text-white hover:text-secondary-600 transition-colors duration-150 ease-in-out">Accueil</a>
-                        <a href="#methode" class="text-base font-medium text-white hover:text-secondary-600 transition-colors duration-150 ease-in-out">Notre Méthode</a>
-                        <a href="#appel" class="text-base font-medium text-white hover:text-secondary-600 transition-colors duration-150 ease-in-out">L'Appel</a>
-                        <a href="#pour-qui" class="text-base font-medium text-white hover:text-secondary-600 transition-colors duration-150 ease-in-out">Pour Qui?</a>
-                        <a href="#pourquoi-nous" class="text-base font-medium text-white hover:text-secondary-600 transition-colors duration-150 ease-in-out">Pourquoi Nous?</a>
+                        <a href="#hero" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Accueil</a>
+                        <a href="#methode" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Notre Méthode</a>
+                        <a href="#appel" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">L'Appel</a>
+                        <a href="#pour-qui" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Pour Qui?</a>
+                        <a href="#pourquoi-nous" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Pourquoi Nous?</a>
                     </nav>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         </div>
 
         <!-- Footer -->
-        <footer>
+        <footer class="border-t border-zinc-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
                     <div class="text-sm text-zinc-400">
