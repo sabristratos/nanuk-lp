@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}"
     @class([
-        'dark' => setting('enable_dark_mode', true) &&
+        'dark' => request()->is('admin*') && setting('enable_dark_mode', true) &&
                  (setting('theme', 'light') === 'dark' ||
                  (setting('theme', 'light') === 'system' &&
                   request()->header('Sec-CH-Prefers-Color-Scheme') === 'dark'))
@@ -46,7 +46,7 @@
 
     <!-- Flux Appearance -->
     @php
-        $enableDarkMode = setting('enable_dark_mode', true);
+        $enableDarkMode = request()->is('admin*') && setting('enable_dark_mode', true);
         $theme = setting('theme', 'light');
     @endphp
 
@@ -133,4 +133,4 @@
         </div>
     @endif
 </body>
-</html> 
+</html>

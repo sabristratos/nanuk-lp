@@ -1,5 +1,5 @@
 <x-layouts.base :title="$title ?? null">
-    <div class="dark min-h-screen relative isolate">
+    <div class="min-h-screen relative isolate">
         <div class="absolute inset-x-0 -top-40 -z-10 transform-gpu blur-3xl sm:-top-80" aria-hidden="true">
             <div
                 id="background-gradient"
