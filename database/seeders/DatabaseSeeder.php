@@ -28,5 +28,8 @@ class DatabaseSeeder extends Seeder
 
         // Seed experiments
         $this->call(ExperimentSeeder::class);
+
+        // Seed testimonials
+        $this->call(TestimonialSeeder::class);
     }
 }

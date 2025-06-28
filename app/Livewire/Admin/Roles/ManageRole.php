@@ -74,10 +74,21 @@ class ManageRole extends Component
                 $this->redirect(route('admin.roles.edit', $role), navigate: true);
                 return;
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors from the service
+            foreach ($e->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+            Flux::toast(
+                text: __('Please correct the errors below.'),
+                heading: __('Validation Error'),
+                variant: 'danger'
+            );
+            return;
         } catch (\Exception $e) {
             Log::error('Failed to save role: ' . $e->getMessage());
             Flux::toast(
-                text: __('Failed to save role. Please try again.'),
+                text: $e->getMessage() ?: __('Failed to save role. Please try again.'),
                 heading: __('Error'),
                 variant: 'danger'
             );

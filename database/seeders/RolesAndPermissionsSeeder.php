@@ -27,6 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'name' => 'Administrator',
             'slug' => 'admin',
             'description' => 'Full access to all system features',
+            'is_system' => true,
         ]);
 
         $editorRole = Role::create([
@@ -39,6 +40,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'name' => 'User',
             'slug' => 'user',
             'description' => 'Standard user with basic access',
+            'is_system' => true,
         ]);
 
         // Create permissions
@@ -218,6 +220,31 @@ class RolesAndPermissionsSeeder extends Seeder
             'description' => 'Can delete legal pages',
         ]);
 
+        // Testimonials management permissions
+        $viewTestimonialsPermission = Permission::create([
+            'name' => 'View Testimonials',
+            'slug' => 'view-testimonials',
+            'description' => 'Can view testimonials',
+        ]);
+
+        $createTestimonialsPermission = Permission::create([
+            'name' => 'Create Testimonials',
+            'slug' => 'create-testimonials',
+            'description' => 'Can create new testimonials',
+        ]);
+
+        $editTestimonialsPermission = Permission::create([
+            'name' => 'Edit Testimonials',
+            'slug' => 'edit-testimonials',
+            'description' => 'Can edit existing testimonials',
+        ]);
+
+        $deleteTestimonialsPermission = Permission::create([
+            'name' => 'Delete Testimonials',
+            'slug' => 'delete-testimonials',
+            'description' => 'Can delete testimonials',
+        ]);
+
         // Dashboard permissions
         $viewDashboardPermission = Permission::create([
             'name' => 'View Dashboard',
@@ -287,6 +314,10 @@ class RolesAndPermissionsSeeder extends Seeder
             $createLegalPagesPermission->id,
             $editLegalPagesPermission->id,
             $deleteLegalPagesPermission->id,
+            $viewTestimonialsPermission->id,
+            $createTestimonialsPermission->id,
+            $editTestimonialsPermission->id,
+            $deleteTestimonialsPermission->id,
             $viewExperimentsPermission->id,
             $createExperimentsPermission->id,
             $editExperimentsPermission->id,

@@ -106,10 +106,21 @@ class ManageUser extends Component
                 $this->redirect(route('admin.users.edit', $user), navigate: true);
                 return;
             }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Handle validation errors from the service
+            foreach ($e->errors() as $field => $messages) {
+                $this->addError($field, $messages[0]);
+            }
+            Flux::toast(
+                text: __('Please correct the errors below.'),
+                heading: __('Validation Error'),
+                variant: 'danger'
+            );
+            return;
         } catch (\Exception $e) {
             Log::error('Failed to save user: ' . $e->getMessage());
             Flux::toast(
-                text: __('Failed to save user. Please try again.'),
+                text: $e->getMessage() ?: __('Failed to save user. Please try again.'),
                 heading: __('Error'),
                 variant: 'danger'
             );

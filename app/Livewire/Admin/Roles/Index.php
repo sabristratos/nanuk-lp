@@ -78,7 +78,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Failed to delete role: ' . $e->getMessage());
             Flux::toast(
-                text: __('Failed to delete role. Please try again.'),
+                text: $e->getMessage() ?: __('Failed to delete role. Please try again.'),
                 heading: __('Error'),
                 variant: 'danger'
             );

@@ -13,7 +13,7 @@
                     </div>
                     <div class="ml-4">
                         <h3 data-content-key="why-us.item-1.title" class="text-xl font-semibold text-zinc-100">
-                            100+ campagnes Meta et Google optimisées
+                            1000+ campagnes Meta et Google optimisées
                         </h3>
                         <p data-content-key="why-us.item-1.description" class="mt-2 text-base text-zinc-100">
                             Spécialement conçues pour les PME locales, générant des résultats concrets.

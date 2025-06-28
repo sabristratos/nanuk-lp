@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Experiment;
 use App\Models\Variation;
 use App\Services\MetricsService;
+use App\Services\SubmissionService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -29,17 +30,23 @@ class LandingPageForm extends Component
     #[Validate('required|email|max:255')]
     public string $email = '';
 
-    #[Validate('required|string|max:20')] // Adjust max length as needed for phone format
+    #[Validate('required|string|max:20')]
     public string $phone = '';
 
     #[Validate('nullable|url|max:255')]
     public string $website = '';
 
     #[Validate('required|string')]
-    public string $primaryGoal = '';
+    public string $businessYears = '';
 
     #[Validate('required|string')]
-    public string $digitalMarketingExperience = '';
+    public string $mainObjective = '';
+
+    #[Validate('required|string')]
+    public string $onlineAdvertisingExperience = '';
+
+    #[Validate('required|string')]
+    public string $monthlyBudget = '';
 
     #[Validate('required|string')]
     public string $readyToInvest = '';
@@ -67,6 +74,15 @@ class LandingPageForm extends Component
                 }
             }
         }
+
+        // Auto-fill form with browser data if available
+        $this->autoFillForm();
+    }
+
+    public function autoFillForm(): void
+    {
+        // This will be handled by JavaScript to auto-fill form fields
+        // The actual auto-fill logic will be in the Blade template
     }
 
     public function openModal(): void
@@ -94,13 +110,15 @@ class LandingPageForm extends Component
         $this->email = '';
         $this->phone = '';
         $this->website = '';
-        $this->primaryGoal = '';
-        $this->digitalMarketingExperience = '';
+        $this->businessYears = '';
+        $this->mainObjective = '';
+        $this->onlineAdvertisingExperience = '';
+        $this->monthlyBudget = '';
         $this->readyToInvest = '';
-        $this->consent = false; // Also reset consent if needed, or default to true
+        $this->consent = false;
     }
 
-    public function submit(MetricsService $metricsService)
+    public function submit(SubmissionService $submissionService)
     {
         $this->validate();
 
@@ -108,67 +126,50 @@ class LandingPageForm extends Component
         $this->submissionSuccess = false;
         $this->failureMessage = '';
 
-        // Record conversion for A/B testing
-        if ($this->experimentId && $this->variationId) {
-            try {
-                $experiment = Experiment::find($this->experimentId);
-                $variation = Variation::find($this->variationId);
-
-                if ($experiment && $variation) {
-                    $payload = $this->only([
-                        'firstName', 'lastName', 'email', 'phone', 'website',
-                        'primaryGoal', 'digitalMarketingExperience', 'readyToInvest', 'consent'
-                    ]);
-                    $metricsService->recordConversion($experiment, $variation, 'form_submission', $payload);
-                }
-            } catch (\Exception $e) {
-                Log::error('Failed to record experiment conversion', [
-                    'error' => $e->getMessage(),
-                    'experiment_id' => $this->experimentId,
-                    'variation_id' => $this->variationId,
-                ]);
-            }
-        }
-
-        if ($this->readyToInvest === 'Non je ne suis pas intéressé pour l\'instant') {
+        if ($this->readyToInvest === "Non, j'étais juste curieux.") {
             $this->submissionFailed = true;
             $this->failureMessage = 'Merci pour votre intérêt. Il semble que nos services ne correspondent pas à vos besoins actuels.';
-            // $this->resetForm(); // Optionally reset form
             return;
         }
 
+        $formData = $this->only([
+            'firstName', 'lastName', 'email', 'phone', 'website',
+            'businessYears', 'mainObjective', 'onlineAdvertisingExperience',
+            'monthlyBudget', 'readyToInvest', 'consent'
+        ]);
+        
+        // Normalize form data keys to snake_case for the service
+        $normalizedData = [
+            'first_name' => $formData['firstName'],
+            'last_name' => $formData['lastName'],
+            'email' => $formData['email'],
+            'phone' => $formData['phone'],
+            'website' => $formData['website'],
+            'business_years' => $formData['businessYears'],
+            'main_objective' => $formData['mainObjective'],
+            'online_advertising_experience' => $formData['onlineAdvertisingExperience'],
+            'monthly_budget' => $formData['monthlyBudget'],
+            'ready_to_invest' => $formData['readyToInvest'],
+            'consent' => $formData['consent'],
+        ];
+
         try {
-            $response = Http::post('https://n8n.nanukweb.ca/webhook/go-nanukweb-1', [
-                'first_name' => $this->firstName,
-                'last_name' => $this->lastName,
-                'email' => $this->email,
-                'phone' => $this->phone,
-                'website' => $this->website,
-                'primary_goal' => $this->primaryGoal,
-                'digital_marketing_experience' => $this->digitalMarketingExperience,
-                'ready_to_invest' => $this->readyToInvest,
-                'consent_given' => $this->consent,
-                'submitted_at' => now()->toIso8601String(),
+            $experiment = $this->experimentId ? Experiment::find($this->experimentId) : null;
+            $variation = $this->variationId ? Variation::find($this->variationId) : null;
+
+            $submissionService->create($normalizedData, request(), $experiment, $variation);
+
+            $this->submissionSuccess = true;
+            $this->resetForm();
+            
+        } catch (\Exception $e) {
+            Log::error('Form submission failed', [
+                'error' => $e->getMessage(),
+                'data' => $normalizedData,
             ]);
 
-            if ($response->successful()) {
-                $this->submissionSuccess = true;
-                // $this->resetForm(); // Reset form on success
-                // $this->showModal = false; // Close modal on success
-                // Potentially emit an event to redirect or show a global success message
-                // session()->flash('form-success', 'Votre demande a été soumise avec succès!');
-            } else {
-                Log::error('Webhook submission failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-                $this->submissionFailed = true;
-                $this->failureMessage = 'Une erreur s\'est produite lors de la soumission de votre demande. Veuillez réessayer plus tard.';
-            }
-        } catch (\Exception $e) {
-            Log::error('Webhook submission exception', ['message' => $e->getMessage()]);
             $this->submissionFailed = true;
-            $this->failureMessage = 'Une erreur de communication s\'est produite. Veuillez réessayer plus tard.';
+            $this->failureMessage = 'Une erreur s\'est produite lors de la soumission de votre demande. Veuillez réessayer plus tard.';
         }
     }
 

@@ -13,9 +13,16 @@
                 <div class="flex items-center justify-between h-16 md:h-20">
                     <div class="flex-shrink-0">
                         @if(setting('show_logo_in_header', true))
-                            <a href="/" class="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors duration-150 ease-in-out">
-                                {{ setting('site_name', config('app.name', 'Laravel')) }}
-                            </a>
+                            @php($logo = setting('logo'))
+                            @if($logo)
+                                <a href="/" class="flex items-center">
+                                    <img src="{{ $logo }}" alt="{{ setting('site_name', config('app.name', 'Laravel')) }}" class="h-8 md:h-10 w-auto">
+                                </a>
+                            @else
+                                <a href="/" class="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors duration-150 ease-in-out">
+                                    {{ setting('site_name', config('app.name', 'Laravel')) }}
+                                </a>
+                            @endif
                         @endif
                     </div>
 
@@ -25,6 +32,14 @@
                         <a href="#appel" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">L'Appel</a>
                         <a href="#pour-qui" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Pour Qui?</a>
                         <a href="#pourquoi-nous" class="text-base font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out">Pourquoi Nous?</a>
+                        <x-cta-button
+                            click="scrollToForm()"
+                            class="px-6 py-2 text-sm"
+                            data-element-key="navigation.cta"
+                            data-content-key="navigation.cta"
+                        >
+                        Réserver votre appel 
+                        </x-cta-button>
                     </nav>
                 </div>
             </div>

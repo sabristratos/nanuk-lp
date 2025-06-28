@@ -34,103 +34,125 @@
                         </x-slot>
                     </flux:callout>
                 @else
-                    <form wire:submit.prevent="submit">
+                    <form wire:submit.prevent="submit"
+                          x-data="{
+                            fields: ['firstName','lastName','email','phone','website','businessYears','mainObjective','onlineAdvertisingExperience','monthlyBudget','readyToInvest'],
+                            save() {
+                              this.fields.forEach(f => localStorage.setItem('lpform_' + f, $refs[f]?.value ?? ''));
+                            },
+                            load() {
+                              this.fields.forEach(f => { if ($refs[f] && localStorage.getItem('lpform_' + f)) $refs[f].value = localStorage.getItem('lpform_' + f); });
+                            }
+                          }"
+                          x-init="load()"
+                          @change.debounce.500="save()"
+                          autocomplete="on"
+                    >
                         <div class="space-y-6 mt-4">
                             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
                                 <div>
                                     <label for="firstName" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.first-name.label">Prénom<span class="text-red-400 ml-0.5">*</span></label>
-                                    <input type="text" wire:model.blur="firstName" id="firstName" placeholder="Votre prénom"
+                                    <input type="text" wire:model.blur="firstName" id="firstName" name="first_name" x-ref="firstName" placeholder="Votre prénom"
                                            data-content-key="form-modal.first-name.placeholder"
-                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="given-name">
                                     @error('firstName') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label for="lastName" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.last-name.label">Nom<span class="text-red-400 ml-0.5">*</span></label>
-                                    <input type="text" wire:model.blur="lastName" id="lastName" placeholder="Votre nom"
+                                    <input type="text" wire:model.blur="lastName" id="lastName" name="last_name" x-ref="lastName" placeholder="Votre nom"
                                            data-content-key="form-modal.last-name.placeholder"
-                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="family-name">
                                     @error('lastName') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div>
                                 <label for="email" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.email.label">Courriel<span class="text-red-400 ml-0.5">*</span></label>
-                                <input type="email" wire:model.blur="email" id="email" placeholder="vous@exemple.com"
+                                <input type="email" wire:model.blur="email" id="email" name="email" x-ref="email" placeholder="vous@exemple.com"
                                        data-content-key="form-modal.email.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="email">
                                 @error('email') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label for="phone" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.phone.label">Téléphone<span class="text-red-400 ml-0.5">*</span></label>
-                                <input type="tel" wire:model.blur="phone" id="phone" placeholder="+1 (555) 123-4567"
+                                <input type="tel" wire:model.blur="phone" id="phone" name="phone" x-ref="phone" placeholder="+1 (555) 123-4567"
                                        data-content-key="form-modal.phone.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="tel">
                                 @error('phone') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label for="website" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.website.label">Site web<span class="text-zinc-400 text-xs ml-1">(facultatif)</span></label>
-                                <input type="url" wire:model.blur="website" id="website" placeholder="https://www.votresite.com"
+                                <input type="url" wire:model.blur="website" id="website" name="website" x-ref="website" placeholder="https://www.votresite.com"
                                        data-content-key="form-modal.website.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="url">
                                 @error('website') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
-                                <label for="primaryGoal" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.goal.label">Quel est votre objectif principal?<span class="text-red-400 ml-0.5">*</span></label>
+                                <label for="businessYears" class="block text-sm font-medium text-zinc-300 mb-1">1. Depuis combien d'années êtes-vous en affaires ?<span class="text-red-400 ml-0.5">*</span></label>
                                 <div class="relative">
-                                    <select wire:model.blur="primaryGoal" id="primaryGoal"
+                                    <select wire:model.blur="businessYears" id="businessYears" name="business_years" x-ref="businessYears"
                                             class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.goal.option-placeholder" value="">Sélectionnez un objectif...</option>
-                                        <option data-content-key="form-modal.goal.option-sales" value="Augmenter mes ventes en ligne">Augmenter mes ventes en ligne</option>
-                                        <option data-content-key="form-modal.goal.option-leads" value="Générer plus de leads qualifiés">Générer plus de leads qualifiés</option>
-                                        <option data-content-key="form-modal.goal.option-visibility" value="Améliorer la visibilité de ma marque">Améliorer la visibilité de ma marque</option>
-                                        <option data-content-key="form-modal.goal.option-other" value="Autre">Autre</option>
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Je débute">Je débute</option>
+                                        <option value="1 à 3 ans">1 à 3 ans</option>
+                                        <option value="De 3 à 5 ans">De 3 à 5 ans</option>
+                                        <option value="Plus de 5 ans">Plus de 5 ans</option>
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
                                 </div>
-                                @error('primaryGoal') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                                @error('businessYears') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
-
                             <div>
-                                <label for="digitalMarketingExperience" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.experience.label">Depuis combien de temps utilisez-vous des stratégies de marketing numérique?<span class="text-red-400 ml-0.5">*</span></label>
-                                 <div class="relative">
-                                    <select wire:model.blur="digitalMarketingExperience" id="digitalMarketingExperience"
-                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.experience.option-placeholder" value="">Sélectionnez une option...</option>
-                                        <option data-content-key="form-modal.experience.option-new" value="Je débute">Je débute</option>
-                                        <option data-content-key="form-modal.experience.option-6m-1y" value="6 mois à 1 an">6 mois à 1 an</option>
-                                        <option data-content-key="form-modal.experience.option-1y-3y" value="1 à 3 ans">1 à 3 ans</option>
-                                        <option data-content-key="form-modal.experience.option-3y-plus" value="Plus de 3 ans">Plus de 3 ans</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                @error('digitalMarketingExperience') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label for="readyToInvest" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.investment.label">Êtes-vous prêt à investir dans des services de marketing numérique pour atteindre vos objectifs?<span class="text-red-400 ml-0.5">*</span></label>
+                                <label for="mainObjective" class="block text-sm font-medium text-zinc-300 mb-1">2. Quel est votre objectif principal ?<span class="text-red-400 ml-0.5">*</span></label>
                                 <div class="relative">
-                                    <select wire:model.blur="readyToInvest" id="readyToInvest"
+                                    <select wire:model.blur="mainObjective" id="mainObjective" name="main_objective" x-ref="mainObjective"
                                             class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.investment.option-placeholder" value="">Sélectionnez une option...</option>
-                                        <option data-content-key="form-modal.investment.option-yes" value="Oui je suis prêt à passer à l\'action">Oui je suis prêt à passer à l\'action</option>
-                                        <option data-content-key="form-modal.investment.option-no" value="Non je ne suis pas intéressé pour l\'instant">Non je ne suis pas intéressé pour l\'instant</option>
+                                        <option value="">Sélectionnez un objectif...</option>
+                                        <option value="Générer des leads qualifiés">Générer des leads qualifiés</option>
+                                        <option value="Promouvoir un service professionnel">Promouvoir un service professionnel</option>
+                                        <option value="Augmenter la notoriété de votre marque">Augmenter la notoriété de votre marque</option>
+                                        <option value="Recruter des candidats">Recruter des candidats</option>
+                                        <option value="Autre">Autre</option>
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
+                                </div>
+                                @error('mainObjective') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="onlineAdvertisingExperience" class="block text-sm font-medium text-zinc-300 mb-1">3. Avez-vous déjà fait de la publicité en ligne, vous-même ou avec une agence marketing ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="onlineAdvertisingExperience" id="onlineAdvertisingExperience" name="online_advertising_experience" x-ref="onlineAdvertisingExperience"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Oui">Oui</option>
+                                        <option value="Non">Non</option>
+                                    </select>
+                                </div>
+                                @error('onlineAdvertisingExperience') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="monthlyBudget" class="block text-sm font-medium text-zinc-300 mb-1">4. Quel est votre budget mensuel pour la publicité ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="monthlyBudget" id="monthlyBudget" name="monthly_budget" x-ref="monthlyBudget"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez un budget...</option>
+                                        <option value="Entre 1 250 et 2 000 $">Entre 1 250 et 2 000 $</option>
+                                        <option value="Entre 2 000 et 2 750 $">Entre 2 000 et 2 750 $</option>
+                                        <option value="Plus de 2 750 $">Plus de 2 750 $</option>
+                                    </select>
+                                </div>
+                                @error('monthlyBudget') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="readyToInvest" class="block text-sm font-medium text-zinc-300 mb-1">5. Êtes-vous prêt à investir dans des services de marketing numérique pour atteindre vos objectifs ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="readyToInvest" id="readyToInvest" name="ready_to_invest" x-ref="readyToInvest"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Oui, je veux passer à l'action !">Oui, je veux passer à l'action !</option>
+                                        <option value="Non, j'étais juste curieux.">Non, j'étais juste curieux.</option>
+                                    </select>
                                 </div>
                                 @error('readyToInvest') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
@@ -153,7 +175,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-8 pt-5 border-t border-zinc-700 flex justify-end">
+                        <div class="mt-8 pt-5 border-t border-zinc-700 flex justify-center">
                             <x-cta-button 
                                 type="submit" 
                                 wire:target="submit" 
@@ -194,103 +216,125 @@
                         </flux:callout.text>
                     </flux:callout>
                 @else
-                    <form wire:submit.prevent="submit" class="mt-6">
+                    <form wire:submit.prevent="submit" class="mt-6"
+                          x-data="{
+                            fields: ['firstName','lastName','email','phone','website','businessYears','mainObjective','onlineAdvertisingExperience','monthlyBudget','readyToInvest'],
+                            save() {
+                              this.fields.forEach(f => localStorage.setItem('lpform_' + f, $refs[f]?.value ?? ''));
+                            },
+                            load() {
+                              this.fields.forEach(f => { if ($refs[f] && localStorage.getItem('lpform_' + f)) $refs[f].value = localStorage.getItem('lpform_' + f); });
+                            }
+                          }"
+                          x-init="load()"
+                          @change.debounce.500="save()"
+                          autocomplete="on"
+                    >
                         <div class="space-y-6">
                             <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2">
                                 <div>
                                     <label for="firstName" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.first-name.label">Prénom<span class="text-red-400 ml-0.5">*</span></label>
-                                    <input type="text" wire:model.blur="firstName" id="firstName" placeholder="Votre prénom"
+                                    <input type="text" wire:model.blur="firstName" id="firstName" name="first_name" x-ref="firstName" placeholder="Votre prénom"
                                            data-content-key="form-modal.first-name.placeholder"
-                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="given-name">
                                     @error('firstName') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label for="lastName" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.last-name.label">Nom<span class="text-red-400 ml-0.5">*</span></label>
-                                    <input type="text" wire:model.blur="lastName" id="lastName" placeholder="Votre nom"
+                                    <input type="text" wire:model.blur="lastName" id="lastName" name="last_name" x-ref="lastName" placeholder="Votre nom"
                                            data-content-key="form-modal.last-name.placeholder"
-                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                           class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="family-name">
                                     @error('lastName') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div>
                                 <label for="email" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.email.label">Courriel<span class="text-red-400 ml-0.5">*</span></label>
-                                <input type="email" wire:model.blur="email" id="email" placeholder="vous@exemple.com"
+                                <input type="email" wire:model.blur="email" id="email" name="email" x-ref="email" placeholder="vous@exemple.com"
                                        data-content-key="form-modal.email.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="email">
                                 @error('email') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label for="phone" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.phone.label">Téléphone<span class="text-red-400 ml-0.5">*</span></label>
-                                <input type="tel" wire:model.blur="phone" id="phone" placeholder="+1 (555) 123-4567"
+                                <input type="tel" wire:model.blur="phone" id="phone" name="phone" x-ref="phone" placeholder="+1 (555) 123-4567"
                                        data-content-key="form-modal.phone.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="tel">
                                 @error('phone') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
                                 <label for="website" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.website.label">Site web<span class="text-zinc-400 text-xs ml-1">(facultatif)</span></label>
-                                <input type="url" wire:model.blur="website" id="website" placeholder="https://www.votresite.com"
+                                <input type="url" wire:model.blur="website" id="website" name="website" x-ref="website" placeholder="https://www.votresite.com"
                                        data-content-key="form-modal.website.placeholder"
-                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                       class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60" autocomplete="url">
                                 @error('website') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <div>
-                                <label for="primaryGoal" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.goal.label">Quel est votre objectif principal?<span class="text-red-400 ml-0.5">*</span></label>
+                                <label for="businessYears" class="block text-sm font-medium text-zinc-300 mb-1">1. Depuis combien d'années êtes-vous en affaires ?<span class="text-red-400 ml-0.5">*</span></label>
                                 <div class="relative">
-                                    <select wire:model.blur="primaryGoal" id="primaryGoal"
+                                    <select wire:model.blur="businessYears" id="businessYears" name="business_years" x-ref="businessYears"
                                             class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.goal.option-placeholder" value="">Sélectionnez un objectif...</option>
-                                        <option data-content-key="form-modal.goal.option-sales" value="Augmenter mes ventes en ligne">Augmenter mes ventes en ligne</option>
-                                        <option data-content-key="form-modal.goal.option-leads" value="Générer plus de leads qualifiés">Générer plus de leads qualifiés</option>
-                                        <option data-content-key="form-modal.goal.option-visibility" value="Améliorer la visibilité de ma marque">Améliorer la visibilité de ma marque</option>
-                                        <option data-content-key="form-modal.goal.option-other" value="Autre">Autre</option>
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Je débute">Je débute</option>
+                                        <option value="1 à 3 ans">1 à 3 ans</option>
+                                        <option value="De 3 à 5 ans">De 3 à 5 ans</option>
+                                        <option value="Plus de 5 ans">Plus de 5 ans</option>
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
                                 </div>
-                                @error('primaryGoal') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                                @error('businessYears') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>
-
                             <div>
-                                <label for="digitalMarketingExperience" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.experience.label">Depuis combien de temps utilisez-vous des stratégies de marketing numérique?<span class="text-red-400 ml-0.5">*</span></label>
-                                 <div class="relative">
-                                    <select wire:model.blur="digitalMarketingExperience" id="digitalMarketingExperience"
-                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.experience.option-placeholder" value="">Sélectionnez une option...</option>
-                                        <option data-content-key="form-modal.experience.option-new" value="Je débute">Je débute</option>
-                                        <option data-content-key="form-modal.experience.option-6m-1y" value="6 mois à 1 an">6 mois à 1 an</option>
-                                        <option data-content-key="form-modal.experience.option-1y-3y" value="1 à 3 ans">1 à 3 ans</option>
-                                        <option data-content-key="form-modal.experience.option-3y-plus" value="Plus de 3 ans">Plus de 3 ans</option>
-                                    </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </div>
-                                @error('digitalMarketingExperience') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
-                            </div>
-
-                            <div>
-                                <label for="readyToInvest" class="block text-sm font-medium text-zinc-300 mb-1" data-content-key="form-modal.investment.label">Êtes-vous prêt à investir dans des services de marketing numérique pour atteindre vos objectifs?<span class="text-red-400 ml-0.5">*</span></label>
+                                <label for="mainObjective" class="block text-sm font-medium text-zinc-300 mb-1">2. Quel est votre objectif principal ?<span class="text-red-400 ml-0.5">*</span></label>
                                 <div class="relative">
-                                    <select wire:model.blur="readyToInvest" id="readyToInvest"
+                                    <select wire:model.blur="mainObjective" id="mainObjective" name="main_objective" x-ref="mainObjective"
                                             class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
-                                        <option data-content-key="form-modal.investment.option-placeholder" value="">Sélectionnez une option...</option>
-                                        <option data-content-key="form-modal.investment.option-yes" value="Oui je suis prêt à passer à l\'action">Oui je suis prêt à passer à l\'action</option>
-                                        <option data-content-key="form-modal.investment.option-no" value="Non je ne suis pas intéressé pour l\'instant">Non je ne suis pas intéressé pour l\'instant</option>
+                                        <option value="">Sélectionnez un objectif...</option>
+                                        <option value="Générer des leads qualifiés">Générer des leads qualifiés</option>
+                                        <option value="Promouvoir un service professionnel">Promouvoir un service professionnel</option>
+                                        <option value="Augmenter la notoriété de votre marque">Augmenter la notoriété de votre marque</option>
+                                        <option value="Recruter des candidats">Recruter des candidats</option>
+                                        <option value="Autre">Autre</option>
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-400">
-                                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
+                                </div>
+                                @error('mainObjective') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="onlineAdvertisingExperience" class="block text-sm font-medium text-zinc-300 mb-1">3. Avez-vous déjà fait de la publicité en ligne, vous-même ou avec une agence marketing ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="onlineAdvertisingExperience" id="onlineAdvertisingExperience" name="online_advertising_experience" x-ref="onlineAdvertisingExperience"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Oui">Oui</option>
+                                        <option value="Non">Non</option>
+                                    </select>
+                                </div>
+                                @error('onlineAdvertisingExperience') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="monthlyBudget" class="block text-sm font-medium text-zinc-300 mb-1">4. Quel est votre budget mensuel pour la publicité ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="monthlyBudget" id="monthlyBudget" name="monthly_budget" x-ref="monthlyBudget"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez un budget...</option>
+                                        <option value="Entre 1 250 et 2 000 $">Entre 1 250 et 2 000 $</option>
+                                        <option value="Entre 2 000 et 2 750 $">Entre 2 000 et 2 750 $</option>
+                                        <option value="Plus de 2 750 $">Plus de 2 750 $</option>
+                                    </select>
+                                </div>
+                                @error('monthlyBudget') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="readyToInvest" class="block text-sm font-medium text-zinc-300 mb-1">5. Êtes-vous prêt à investir dans des services de marketing numérique pour atteindre vos objectifs ?<span class="text-red-400 ml-0.5">*</span></label>
+                                <div class="relative">
+                                    <select wire:model.blur="readyToInvest" id="readyToInvest" name="ready_to_invest" x-ref="readyToInvest"
+                                            class="block w-full rounded-full border-2 border-white/50 bg-tertiary-900 py-2.5 px-4 text-zinc-100 text-base shadow-sm focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none transition-colors duration-150 ease-in-out placeholder:text-zinc-500 appearance-none pr-10 hover:border-primary-400 hover:ring-1 hover:ring-primary-400 hover:ring-opacity-60">
+                                        <option value="">Sélectionnez une option...</option>
+                                        <option value="Oui, je veux passer à l'action !">Oui, je veux passer à l'action !</option>
+                                        <option value="Non, j'étais juste curieux.">Non, j'étais juste curieux.</option>
+                                    </select>
                                 </div>
                                 @error('readyToInvest') <span class="text-sm text-red-400 mt-1">{{ $message }}</span> @enderror
                             </div>

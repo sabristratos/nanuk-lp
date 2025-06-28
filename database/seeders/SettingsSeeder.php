@@ -222,6 +222,28 @@ class SettingsSeeder extends Seeder
                 'display_name' => ['en' => 'Enable Dark Mode', 'fr' => 'Activer le mode sombre'],
                 'description' => ['en' => 'Whether to enable dark mode for the application', 'fr' => 'Indique s\'il faut activer le mode sombre pour l\'application'],
             ],
+            [
+                'setting_group_id' => $appearanceGroup->id,
+                'key' => 'hero_video_url',
+                'value' => '',
+                'type' => SettingType::TEXT,
+                'is_public' => true,
+                'is_required' => false,
+                'order' => 10,
+                'display_name' => ['en' => 'Hero Video URL', 'fr' => 'URL vidéo Hero'],
+                'description' => ['en' => 'YouTube video URL for the hero section (takes priority over image)', 'fr' => 'URL YouTube pour la section hero (prioritaire sur l\'image)'],
+            ],
+            [
+                'setting_group_id' => $appearanceGroup->id,
+                'key' => 'hero_image',
+                'value' => '',
+                'type' => SettingType::FILE,
+                'is_public' => true,
+                'is_required' => false,
+                'order' => 11,
+                'display_name' => ['en' => 'Hero Image', 'fr' => 'Image Hero'],
+                'description' => ['en' => 'Image for the hero section (used if no video)', 'fr' => 'Image pour la section hero (utilisée si pas de vidéo)'],
+            ],
 
             // Notification Settings
             [
@@ -507,11 +529,21 @@ class SettingsSeeder extends Seeder
             // Site Identity Settings
             [
                 'setting_group_id' => $siteIdentityGroup->id,
-                'key' => 'favicon',
+                'key' => 'logo',
                 'type' => SettingType::FILE,
                 'is_public' => true,
                 'is_required' => false,
                 'order' => 1,
+                'display_name' => ['en' => 'Logo', 'fr' => 'Logo'],
+                'description' => ['en' => 'The logo for your site. Recommended size: 200x60px or similar aspect ratio.', 'fr' => 'Le logo de votre site. Taille recommandée : 200x60px ou ratio similaire.'],
+            ],
+            [
+                'setting_group_id' => $siteIdentityGroup->id,
+                'key' => 'favicon',
+                'type' => SettingType::FILE,
+                'is_public' => true,
+                'is_required' => false,
+                'order' => 2,
                 'display_name' => ['en' => 'Favicon', 'fr' => 'Favicon'],
                 'description' => ['en' => 'The favicon for your site.', 'fr' => 'Le favicon de votre site.'],
             ],
@@ -521,7 +553,7 @@ class SettingsSeeder extends Seeder
                 'type' => SettingType::TEXTAREA,
                 'is_public' => true,
                 'is_required' => false,
-                'order' => 2,
+                'order' => 3,
                 'display_name' => ['en' => 'Footer Copyright Text', 'fr' => 'Texte de copyright du pied de page'],
                 'description' => ['en' => 'The copyright text displayed in the footer. You can use PHP tags like {year}.', 'fr' => 'Le texte de copyright affiché dans le pied de page. Vous pouvez utiliser des balises PHP comme {year}.'],
                 'value' => '© {year} My Awesome Site. All rights reserved.',
@@ -620,19 +652,22 @@ class SettingsSeeder extends Seeder
                 'setting_group_id' => $experimentsGroup->id,
                 'key' => 'webhook_payload',
                 'value' => json_encode([
-                    'event_type' => 'conversion',
+                    'event_type' => 'form_submission',
+                    'timestamp' => '{timestamp}',
                     'visitor_id' => '{visitorId}',
+                    'experiment_id' => '{experimentId}',
                     'experiment_name' => '{experimentName}',
+                    'variation_id' => '{variationId}',
                     'variation_name' => '{variationName}',
                     'conversion_type' => '{conversionType}',
-                    'payload' => '{payload}'
+                    'form_data' => '{payload}'
                 ], JSON_PRETTY_PRINT),
                 'type' => SettingType::TEXTAREA,
                 'is_public' => false,
                 'is_required' => false,
                 'order' => 3,
-                'display_name' => ['en' => 'Webhook Payload', 'fr' => 'Charge Utile du Webhook'],
-                'description' => ['en' => 'The JSON payload to send. Use placeholders like {visitorId}, {experimentName}, {variationName}, {conversionType}, and {payload}.', 'fr' => 'La charge utile JSON à envoyer. Utilisez des placeholders comme {visitorId}, {experimentName}, {variationName}, {conversionType}, et {payload}.'],
+                'display_name' => ['en' => 'Webhook Payload Template', 'fr' => 'Webhook Payload Template'],
+                'description' => ['en' => 'JSON template for webhook payload. Use placeholders: {visitorId}, {experimentId}, {experimentName}, {variationId}, {variationName}, {conversionType}, {timestamp}, {payload}', 'fr' => 'JSON template for webhook payload. Use placeholders: {visitorId}, {experimentId}, {experimentName}, {variationId}, {variationName}, {conversionType}, {timestamp}, {payload}'],
             ],
             [
                 'setting_group_id' => $experimentsGroup->id,
@@ -773,6 +808,34 @@ class SettingsSeeder extends Seeder
                 }
                 $setting->save();
             }
+        }
+
+        // Add hero video and image settings if not present
+        if (!\App\Models\Setting::where('key', 'hero_video_url')->exists()) {
+            \App\Models\Setting::create([
+                'setting_group_id' => $appearanceGroup->id,
+                'key' => 'hero_video_url',
+                'value' => '',
+                'type' => SettingType::TEXT,
+                'is_public' => true,
+                'is_required' => false,
+                'order' => 10,
+                'display_name' => ['en' => 'Hero Video URL', 'fr' => 'URL vidéo Hero'],
+                'description' => ['en' => 'YouTube video URL for the hero section (takes priority over image)', 'fr' => 'URL YouTube pour la section hero (prioritaire sur l\'image)'],
+            ]);
+        }
+        if (!\App\Models\Setting::where('key', 'hero_image')->exists()) {
+            \App\Models\Setting::create([
+                'setting_group_id' => $appearanceGroup->id,
+                'key' => 'hero_image',
+                'value' => '',
+                'type' => SettingType::FILE,
+                'is_public' => true,
+                'is_required' => false,
+                'order' => 11,
+                'display_name' => ['en' => 'Hero Image', 'fr' => 'Image Hero'],
+                'description' => ['en' => 'Image for the hero section (used if no video)', 'fr' => 'Image pour la section hero (utilisée si pas de vidéo)'],
+            ]);
         }
     }
 }

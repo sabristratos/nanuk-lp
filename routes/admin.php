@@ -69,7 +69,7 @@ Route::prefix('experiments')->name('experiments.')->middleware(['permission:view
 // Submissions Management
 Route::prefix('submissions')->name('submissions.')->group(function () {
     Route::get('/', \App\Livewire\Admin\Submissions\Index::class)->name('index');
-    Route::get('/{result}', \App\Livewire\Admin\Submissions\Show::class)->name('show');
+    Route::get('/{submission}', \App\Livewire\Admin\Submissions\Show::class)->name('show');
 });
 
 // User Management
@@ -78,4 +78,11 @@ Route::prefix('users')->name('users.')->middleware(['permission:view-users'])->g
     Route::get('/create', ManageUser::class)->name('create')->middleware('permission:create-users');
     Route::get('/{user}/edit', ManageUser::class)->name('edit')->middleware('permission:edit-users');
     Route::get('/{user}/impersonate', [ImpersonationController::class, 'start'])->name('impersonate');
+});
+
+// Testimonials Management
+Route::prefix('testimonials')->name('testimonials.')->middleware(['permission:view-testimonials'])->group(function () {
+    Route::get('/', \App\Livewire\Admin\Testimonials\Index::class)->name('index');
+    Route::get('/create', \App\Livewire\Admin\Testimonials\ManageTestimonial::class)->name('create')->middleware('permission:create-testimonials');
+    Route::get('/{testimonial}/edit', \App\Livewire\Admin\Testimonials\ManageTestimonial::class)->name('edit')->middleware('permission:edit-testimonials');
 }); 

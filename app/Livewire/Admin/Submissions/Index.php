@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin\Submissions;
 
-use App\Models\ExperimentResult;
+use App\Models\Submission;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -27,25 +27,19 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function getResultsProperty()
+    public function getSubmissionsProperty()
     {
-        $query = ExperimentResult::query()
+        $query = Submission::query()
             ->with(['experiment', 'variation']);
 
         if ($this->sortBy === 'experiment.name') {
-            $query->whereHas('experiment')
-                ->orderBy(
-                    \App\Models\Experiment::select('name')
-                        ->whereColumn('experiments.id', 'experiment_results.experiment_id'),
-                    $this->sortDirection
-                );
+            $query->join('experiments', 'submissions.experiment_id', '=', 'experiments.id')
+                ->orderBy('experiments.name', $this->sortDirection)
+                ->select('submissions.*');
         } elseif ($this->sortBy === 'variation.name') {
-            $query->whereHas('variation')
-                ->orderBy(
-                    \App\Models\Variation::select('name')
-                        ->whereColumn('variations.id', 'experiment_results.variation_id'),
-                    $this->sortDirection
-                );
+            $query->join('variations', 'submissions.variation_id', '=', 'variations.id')
+                ->orderBy('variations.name', $this->sortDirection)
+                ->select('submissions.*');
         } else {
             $query->orderBy($this->sortBy, $this->sortDirection);
         }
@@ -56,7 +50,7 @@ class Index extends Component
     public function render(): View
     {
         return view('livewire.admin.submissions.index', [
-            'results' => $this->results,
+            'submissions' => $this->submissions,
         ]);
     }
 }

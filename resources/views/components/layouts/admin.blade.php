@@ -4,7 +4,12 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             @if(\App\Facades\Settings::get('show_logo_in_header', true))
-                <flux:brand href="#" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
+                @php($logo = \App\Facades\Settings::get('logo'))
+                @if($logo)
+                    <flux:brand href="#" :logo="$logo" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
+                @else
+                    <flux:brand href="#" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
+                @endif
             @endif
 
             <flux:navlist variant="outline">
@@ -15,6 +20,9 @@
                     <flux:navlist.group icon="user" expandable heading="{{ __('Content') }}" class="grid">
                         @can('view-attachments')
                         <flux:navlist.item href="{{ route('admin.attachments') }}" :current="request()->routeIs('admin.attachments')">{{ __('Attachments') }}</flux:navlist.item>
+                        @endcan
+                        @can('view-testimonials')
+                        <flux:navlist.item href="{{ route('admin.testimonials.index') }}" :current="request()->routeIs('admin.testimonials.*')">{{ __('Testimonials') }}</flux:navlist.item>
                         @endcan
                         @can('view-taxonomies')
                         <flux:navlist.item href="{{ route('admin.taxonomies.index') }}" :current="request()->routeIs('admin.taxonomies.*')">{{ __('Taxonomies') }}</flux:navlist.item>
@@ -198,4 +206,7 @@
     </div>
 
     @livewire('admin.notifications.notification-flyout')
+    @persist('toast')
+    <flux:toast />
+    @endpersist
 </x-layouts.base> 

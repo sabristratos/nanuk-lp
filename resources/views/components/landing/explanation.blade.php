@@ -7,16 +7,24 @@
         </div>
         <div class="max-w-4xl mx-auto">
             <p data-content-key="explanation.text-1" class="explanation-text-1 text-lg md:text-xl text-zinc-100 mb-6 text-center">
-                Chez Nanuk Web, on aide les PME à transformer leurs publicités en véritable machine à générer des ventes.
+                Chez Nanuk Web, on aide les PME à transformer leurs publicités en véritable machine à générer des leads.
             </p>
-            <p data-content-key="explanation.text-2" class="explanation-text-2 text-lg md:text-xl text-zinc-100 mb-6 text-left md:text-justify">
-                Notre méthode repose sur une combinaison stratégique de ciblage, d'optimisation et de création de messages puissants — le tout adapté à votre réalité terrain.
+            <p data-content-key="explanation.text-2" class="explanation-text-2 text-lg md:text-xl text-zinc-100 mb-6 text-center">
+                Notre méthode repose sur une combinaison stratégique de ciblage, d'optimisation et de création de messages puissants — le tout adapté à votre réalité.
             </p>
-            <p data-content-key="explanation.text-3" class="explanation-text-3 text-lg md:text-xl text-zinc-100 mb-10 text-left md:text-justify">
-                Les plateformes publicitaires sont devenues complexes. Ce qui fonctionnait hier ne donne plus rien aujourd'hui. C'est pourquoi notre approche est à la fois technique, humaine et 100 % orientée performance.
+            <p data-content-key="explanation.text-3" class="explanation-text-3 text-lg md:text-xl text-zinc-100 mb-6 text-center">
+                La pub digitale, c'est devenu un champ de mines.
             </p>
-            <p data-content-key="explanation.text-4" class="explanation-text-4 text-lg md:text-xl text-zinc-50 mb-10 text-center font-semibold">
-                Si vous voulez arrêter de gaspiller de l'argent dans des pubs qui ne convertissent pas, réservez votre appel avec un stratège Nanuk maintenant.
+            <div class="explanation-bullets mb-6 text-center">
+                <p class="text-lg md:text-xl text-zinc-100 mb-2">✔️ La concurrence explose</p>
+                <p class="text-lg md:text-xl text-zinc-100 mb-2">✔️ Les algorithmes changent sans prévenir</p>
+                <p class="text-lg md:text-xl text-zinc-100 mb-4">✔️ Ce qui fonctionnait hier ne convertit plus aujourd'hui…</p>
+            </div>
+            <p data-content-key="explanation.text-4" class="explanation-text-4 text-lg md:text-xl text-zinc-100 mb-6 text-center">
+                C'est pourquoi notre approche est à la fois technique, humaine et 100 % orientée performance.
+            </p>
+            <p data-content-key="explanation.text-5" class="explanation-text-5 text-lg md:text-xl text-zinc-50 mb-10 text-center font-semibold">
+                Si vous voulez arrêter de gaspiller de l'argent dans des pubs qui ne convertissent pas, réservez votre appel avec un stratège Nanuk Web maintenant.
             </p>
             <div class="explanation-cta text-center">
                 <x-cta-button dispatch="openModal" class="px-10 py-4 text-lg" data-content-key="explanation.cta">

@@ -84,7 +84,7 @@ class Index extends Component
         } catch (\Exception $e) {
             Log::error('Failed to delete user: ' . $e->getMessage());
             Flux::toast(
-                text: __('Failed to delete user. Please try again.'),
+                text: $e->getMessage() ?: __('Failed to delete user. Please try again.'),
                 heading: __('Error'),
                 variant: 'danger'
             );

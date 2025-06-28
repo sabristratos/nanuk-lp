@@ -30,10 +30,6 @@ class ExperimentService
      */
     public function getActiveExperiment(int $experimentId): ?Experiment
     {
-        \Log::debug('getActiveExperiment: START', [
-            'experimentId' => $experimentId,
-        ]);
-
         $cacheKey = 'experiment.active.id.' . $experimentId;
 
         $experiment = Cache::remember($cacheKey, now()->addHours(1), function () use ($experimentId) {
@@ -41,13 +37,9 @@ class ExperimentService
             // This allows previewing of draft/inactive experiments
             $query = Experiment::where('id', $experimentId)
                 ->with(['variations.modifications']);
-            
-            \Log::debug('getActiveExperiment: Querying for experiment by ID.', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
             return $query->first();
         });
-
-        \Log::debug('getActiveExperiment: END', ['experiment_found' => $experiment ? $experiment->id : 'none']);
 
         return $experiment;
     }
@@ -57,10 +49,6 @@ class ExperimentService
      */
     public function getActiveExperimentByTarget(string $targetKey): ?Experiment
     {
-        \Log::debug('getActiveExperimentByTarget: START', [
-            'targetKey' => $targetKey,
-        ]);
-
         $cacheKey = 'experiment.active.' . $targetKey;
 
         $experiment = Cache::remember($cacheKey, now()->addHours(24), function () use ($targetKey) {
@@ -75,13 +63,9 @@ class ExperimentService
                     $query->where('target', 'like', $targetKey . '%');
                 })
                 ->with(['variations.modifications']);
-            
-            \Log::debug('getActiveExperimentByTarget: Querying for experiment.', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
 
             return $query->first();
         });
-
-        \Log::debug('getActiveExperimentByTarget: END', ['experiment_found' => $experiment ? $experiment->id : 'none']);
 
         return $experiment;
     }

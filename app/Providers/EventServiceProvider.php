@@ -3,13 +3,18 @@
 namespace App\Providers;
 
 use App\Events\ConversionRecorded;
+use App\Events\SubmissionCreated;
 use App\Events\VariationAssigned;
-use App\Listeners\SendConversionToWebhook;
+use App\Listeners\LogConversionRecorded;
+use App\Listeners\LogFailedLoginAttempt;
+use App\Listeners\LogVariationAssigned;
 use App\Listeners\SendEventToGoogleAnalytics;
+use App\Listeners\SendSubmissionToWebhook;
 use App\Models\Experiment;
 use App\Models\Variation;
 use App\Observers\ExperimentObserver;
 use App\Observers\VariationObserver;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -26,11 +31,17 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        Failed::class => [
+            LogFailedLoginAttempt::class,
+        ],
         VariationAssigned::class => [
-            // LogVariationAssigned::class, // This listener is no longer used
+            LogVariationAssigned::class,
         ],
         ConversionRecorded::class => [
-            SendConversionToWebhook::class,
+            LogConversionRecorded::class,
+        ],
+        SubmissionCreated::class => [
+            SendSubmissionToWebhook::class,
         ],
     ];
 
@@ -59,4 +70,4 @@ class EventServiceProvider extends ServiceProvider
     {
         return false;
     }
-} 
+}

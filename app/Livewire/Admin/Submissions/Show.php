@@ -2,18 +2,18 @@
 
 namespace App\Livewire\Admin\Submissions;
 
-use App\Models\ExperimentResult;
+use App\Models\Submission;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
 #[Layout('components.layouts.admin')]
 class Show extends Component
 {
-    public ExperimentResult $result;
+    public Submission $submission;
 
-    public function mount(ExperimentResult $result): void
+    public function mount(Submission $submission): void
     {
-        $this->result = $result->load(['experiment', 'variation']);
+        $this->submission = $submission->load(['experiment', 'variation']);
     }
 
     public function render()

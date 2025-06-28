@@ -15,10 +15,6 @@
                 </li>
                 <li class="consultation-list-item flex items-start">
                     <flux:icon.check-circle class="flex-shrink-0 w-6 h-6 text-primary-500 mr-3 mt-1" />
-                    <span data-content-key="consultation-details.item-3">Vos audiences et mots-clés à fort potentiel</span>
-                </li>
-                <li class="consultation-list-item flex items-start">
-                    <flux:icon.check-circle class="flex-shrink-0 w-6 h-6 text-primary-500 mr-3 mt-1" />
                     <span data-content-key="consultation-details.item-4">Votre budget optimal pour des résultats concrets</span>
                 </li>
                 <li class="consultation-list-item flex items-start">

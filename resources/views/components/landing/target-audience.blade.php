@@ -8,7 +8,7 @@
                 <div class="flex items-start">
                     <flux:icon.briefcase class="flex-shrink-0 size-7 text-primary-500 mr-4 mt-1" />
                     <p data-content-key="target-audience.item-1.text" class="text-lg md:text-xl text-zinc-100">
-                        Dirigeants de PME qui veulent plus de clients sans perdre de temps
+                        Propriétaires de PME qui veulent plus de clients sans perdre de temps
                     </p>
                 </div>
             </div>
@@ -16,7 +16,7 @@
                 <div class="flex items-start">
                     <flux:icon.sparkles class="flex-shrink-0 size-7 text-primary-500 mr-4 mt-1" />
                     <p data-content-key="target-audience.item-2.text" class="text-lg md:text-xl text-zinc-100">
-                        Entreprises qui veulent lancer une pub pour la première fois
+                        Entrepreneurs qui souhaitent une agence qui tient ses engagements et travaille main dans la main avec vous.
                     </p>
                 </div>
             </div>
@@ -24,7 +24,7 @@
                 <div class="flex items-start">
                     <flux:icon.user-group class="flex-shrink-0 size-7 text-primary-500 mr-4 mt-1" />
                     <p data-content-key="target-audience.item-3.text" class="text-lg md:text-xl text-zinc-100">
-                        Responsables marketing à la recherche d'un partenaire stratégique
+                        Entreprises qui veulent enfin optimiser leurs pubs et leur retour sur investissement.
                     </p>
                 </div>
             </div>
