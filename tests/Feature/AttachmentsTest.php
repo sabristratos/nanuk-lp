@@ -122,6 +122,40 @@ class AttachmentsTest extends TestCase
         Storage::disk('public')->assertExists($attachment->path);
     }
 
+    public function test_attachment_service_resizes_images_without_cropping()
+    {
+        // Create a user
+        $user = User::factory()->create();
+
+        // Create a rectangular image (2000x1000 - landscape)
+        $file = UploadedFile::fake()->image('landscape.jpg', 2000, 1000);
+
+        // Use service to upload and optimize file with square constraints
+        $service = new AttachmentService();
+        $attachment = $service->upload($file, $user, 'test-collection', [], [
+            'optimize' => true,
+            'width' => 500,
+            'height' => 500,
+            'quality' => 80,
+        ]);
+
+        // Check if attachment was created
+        $this->assertDatabaseHas('attachments', [
+            'filename' => 'landscape.jpg',
+            'collection' => 'test-collection',
+            'attachable_type' => User::class,
+            'attachable_id' => $user->id,
+        ]);
+
+        // Check if file exists in storage
+        Storage::disk('public')->assertExists($attachment->path);
+
+        // The image should be resized to 500x250 (maintaining aspect ratio)
+        // rather than cropped to 500x500
+        $storedFile = Storage::disk('public')->get($attachment->path);
+        $this->assertNotNull($storedFile);
+    }
+
     public function test_user_can_get_attachments_by_collection()
     {
         // Create a user

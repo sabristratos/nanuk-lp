@@ -159,9 +159,11 @@ class AttachmentService
         $maxWidth = $options['width'] ?? (int)Settings::get('attachments_image_max_width', 0);
         $maxHeight = $options['height'] ?? (int)Settings::get('attachments_image_max_height', 0);
 
+        // Resize image to fit within max dimensions without cropping
         if ($maxWidth > 0 || $maxHeight > 0) {
             if ($maxWidth > 0 && $maxHeight > 0) {
-                $image->cover($maxWidth, $maxHeight);
+                // Scale down to fit within both width and height constraints
+                $image->scaleDown(width: $maxWidth, height: $maxHeight);
             } elseif ($maxWidth > 0) {
                 $image->scaleDown(width: $maxWidth);
             } elseif ($maxHeight > 0) {
