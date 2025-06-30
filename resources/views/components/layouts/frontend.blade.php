@@ -8,7 +8,7 @@
             </div>
         </div>
         <!-- Header -->
-        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-zinc-950/80 backdrop-blur-sm border-b border-zinc-900" style="transform: translateY(-100%);">
+        <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out bg-zinc-950/80 backdrop-blur-sm border-b border-zinc-900" style="transform: translateY(-100%);" x-data="{ mobileMenuOpen: false }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16 md:h-20">
                     <div class="flex-shrink-0">
@@ -41,6 +41,138 @@
                         Réserver votre appel 
                         </x-cta-button>
                     </nav>
+
+                    <!-- Mobile CTA and menu button container -->
+                    <div class="md:hidden flex items-center space-x-3">
+                        <!-- Mobile CTA Button -->
+                        <button 
+                            @click="scrollToForm()"
+                            class="inline-flex items-center justify-center px-4 py-2 rounded-full font-semibold text-black bg-primary-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 transition-all duration-300 ease-in-out text-sm"
+                        >
+                            Réserver
+                        </button>
+
+                        <!-- Mobile menu button -->
+                        <button 
+                            @click="mobileMenuOpen = !mobileMenuOpen"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-zinc-300 hover:text-primary-400 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-400 transition-colors duration-150 ease-in-out"
+                            aria-expanded="false"
+                            aria-controls="mobile-menu"
+                        >
+                            <span class="sr-only">Ouvrir le menu principal</span>
+                            <!-- Icon when menu is closed -->
+                            <svg 
+                                x-show="!mobileMenuOpen"
+                                class="block h-6 w-6" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke="currentColor"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <!-- Icon when menu is open -->
+                            <svg 
+                                x-show="mobileMenuOpen"
+                                class="block h-6 w-6" 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                fill="none" 
+                                viewBox="0 0 24 24" 
+                                stroke="currentColor"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div 
+                x-show="mobileMenuOpen"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 transform translate-x-full"
+                x-transition:enter-end="opacity-100 transform translate-x-0"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform translate-x-0"
+                x-transition:leave-end="opacity-0 transform translate-x-full"
+                class="md:hidden fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-black border-l border-zinc-800 shadow-2xl"
+                style="background-color: #000000 !important;"
+                id="mobile-menu"
+                @click.away="mobileMenuOpen = false"
+            >
+                <div class="flex flex-col h-screen bg-black" style="background-color: #000000 !important;">
+                    <!-- Mobile menu header -->
+                    <div class="flex items-center justify-between p-6 border-b border-zinc-800 bg-black" style="background-color: #000000 !important;">
+                        <h2 class="text-lg font-semibold text-white">Menu</h2>
+                        <button 
+                            @click="mobileMenuOpen = false"
+                            class="text-zinc-400 hover:text-white transition-colors duration-150 ease-in-out"
+                        >
+                            <span class="sr-only">Fermer le menu</span>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Mobile menu navigation -->
+                    <nav class="flex-1 px-6 py-4 space-y-4 bg-black" style="background-color: #000000 !important;">
+                        <a 
+                            href="#hero" 
+                            @click="mobileMenuOpen = false"
+                            class="block text-lg font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out py-3 border-b border-zinc-800/50"
+                        >
+                            Accueil
+                        </a>
+                        <a 
+                            href="#methode" 
+                            @click="mobileMenuOpen = false"
+                            class="block text-lg font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out py-3 border-b border-zinc-800/50"
+                        >
+                            Notre Méthode
+                        </a>
+                        <a 
+                            href="#appel" 
+                            @click="mobileMenuOpen = false"
+                            class="block text-lg font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out py-3 border-b border-zinc-800/50"
+                        >
+                            L'Appel
+                        </a>
+                        <a 
+                            href="#pour-qui" 
+                            @click="mobileMenuOpen = false"
+                            class="block text-lg font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out py-3 border-b border-zinc-800/50"
+                        >
+                            Pour Qui?
+                        </a>
+                        <a 
+                            href="#pourquoi-nous" 
+                            @click="mobileMenuOpen = false"
+                            class="block text-lg font-medium text-zinc-300 hover:text-primary-400 transition-colors duration-150 ease-in-out py-3 border-b border-zinc-800/50"
+                        >
+                            Pourquoi Nous?
+                        </a>
+                    </nav>
+
+                    <!-- Mobile menu CTA section -->
+                    <div class="px-6 py-4 bg-black" style="background-color: #000000 !important;">
+                        <x-cta-button
+                            click="scrollToForm(); mobileMenuOpen = false"
+                            class="w-full justify-center py-4 text-base"
+                            data-element-key="mobile-menu.cta"
+                            data-content-key="mobile-menu.cta"
+                        >
+                            Réserver votre appel gratuit
+                        </x-cta-button>
+                    </div>
+
+                    <!-- Mobile menu footer -->
+                    <div class="p-6 border-t border-zinc-800 bg-black" style="background-color: #000000 !important;">
+                        <div class="text-sm text-zinc-400">
+                            © Nanuk Web inc.
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
