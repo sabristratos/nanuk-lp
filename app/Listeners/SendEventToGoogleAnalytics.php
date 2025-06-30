@@ -22,8 +22,8 @@ class SendEventToGoogleAnalytics implements ShouldQueue
 
     public function handleVariationAssigned(VariationAssigned $event): void
     {
-        $measurementId = setting('experiments.ga4_measurement_id');
-        $apiSecret = setting('experiments.ga4_api_secret');
+        $measurementId = setting('google_analytics_id') ?: setting('experiments.ga4_measurement_id');
+        $apiSecret = setting('google_analytics_api_secret') ?: setting('experiments.ga4_api_secret');
 
         $this->sendEvent(
             $event->visitorId,
@@ -39,8 +39,8 @@ class SendEventToGoogleAnalytics implements ShouldQueue
 
     public function handleConversionRecorded(ConversionRecorded $event): void
     {
-        $measurementId = setting('experiments.ga4_measurement_id');
-        $apiSecret = setting('experiments.ga4_api_secret');
+        $measurementId = setting('google_analytics_id') ?: setting('experiments.ga4_measurement_id');
+        $apiSecret = setting('google_analytics_api_secret') ?: setting('experiments.ga4_api_secret');
 
         $this->sendEvent(
             $event->visitorId,

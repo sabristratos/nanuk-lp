@@ -26,10 +26,18 @@
         <link rel="icon" href="{{ setting('favicon') }}">
     @endif
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://use.typekit.net/gjl2hkx.css">
+    <!-- Preconnects for fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link rel="preconnect" href="https://use.typekit.net" crossorigin>
+    <link rel="preconnect" href="https://p.typekit.net" crossorigin>
+
+    <!-- Preload and load Inter font -->
+    <link rel="preload" as="style" href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap"></noscript>
+
+    <!-- Preload and load Typekit font -->
+    <link rel="preload" as="style" href="https://use.typekit.net/gjl2hkx.css" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://use.typekit.net/gjl2hkx.css"></noscript>
 
     @if(setting('seo_use_sitemap', true))
         <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
@@ -41,8 +49,9 @@
     <!-- Scripts and Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Dynamic CSS based on settings with cache busting -->
-    <link rel="stylesheet" href="{{ route('dynamic.css') }}?v={{ time() }}">
+    <!-- Defer dynamic CSS if not critical -->
+    <link rel="stylesheet" href="{{ route('dynamic.css') }}?v={{ time() }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ route('dynamic.css') }}?v={{ time() }}"></noscript>
 
     <!-- Flux Appearance -->
     @php
@@ -82,6 +91,8 @@
     })(window,document,'script','dataLayer','{{ setting('google_tag_manager_id') }}');</script>
     <!-- End Google Tag Manager -->
     @endif
+
+    <link rel="icon" type="image/png" href="{{ \App\Facades\Settings::getFaviconUrl() }}">
 </head>
 <body
     class="antialiased font-sans"

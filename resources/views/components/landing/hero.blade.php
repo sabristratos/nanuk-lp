@@ -4,13 +4,30 @@
 
 @php
     use App\Facades\Settings;
+    use Illuminate\Support\Str;
     $heroVideoUrl = Settings::get('hero_video_url');
     $heroImage = Settings::get('hero_image');
-    // Extract YouTube video ID if present
-    $youtubeId = null;
+    $embedType = null;
+    $embedSrc = null;
     if ($heroVideoUrl) {
-        if (preg_match('/(?:youtu.be\/|youtube.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/', $heroVideoUrl, $matches)) {
-            $youtubeId = $matches[1];
+        if (Str::contains($heroVideoUrl, ['youtube.com', 'youtu.be'])) {
+            // Extract YouTube video ID
+            if (preg_match('/(?:youtu.be\/|youtube.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/', $heroVideoUrl, $matches)) {
+                $embedType = 'youtube';
+                $embedSrc = 'https://www.youtube.com/embed/' . $matches[1] . '?rel=0&showinfo=0';
+            }
+        } elseif (Str::contains($heroVideoUrl, 'vimeo.com')) {
+            // Extract Vimeo video ID
+            if (preg_match('/vimeo.com\/(\d+)/', $heroVideoUrl, $matches)) {
+                $embedType = 'vimeo';
+                $embedSrc = 'https://player.vimeo.com/video/' . $matches[1];
+            }
+        } elseif (Str::endsWith($heroVideoUrl, ['.mp4', '.webm', '.ogg'])) {
+            $embedType = 'video';
+            $embedSrc = $heroVideoUrl;
+        } else {
+            $embedType = 'iframe';
+            $embedSrc = $heroVideoUrl;
         }
     }
 @endphp
@@ -34,19 +51,39 @@
                     Notre approche éprouvée pour aider les PME à générer davantage de clients, notamment grâce à Google Ads et Meta Ads.
                 </p>
                 
-                @if($youtubeId || $heroImage)
+                @if($embedType || $heroImage)
                     <!-- Media positioned between headline and second paragraph -->
                     <div class="w-full flex justify-center items-center my-12" data-element-key="hero.media">
-                        @if($youtubeId)
+                        @if($embedType === 'youtube' || $embedType === 'vimeo')
                             <div class="aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg bg-black/70" data-element-key="hero.video">
                                 <iframe
-                                    src="https://www.youtube.com/embed/{{ $youtubeId }}?rel=0&showinfo=0"
+                                    src="{{ $embedSrc }}"
                                     title="Hero Video"
                                     frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowfullscreen
                                     class="w-full h-full"
                                     data-element-key="hero.video.iframe"
+                                    loading="lazy"
+                                ></iframe>
+                            </div>
+                        @elseif($embedType === 'video')
+                            <div class="aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg bg-black/70" data-element-key="hero.video">
+                                <video controls preload="metadata" class="w-full h-full rounded-2xl" loading="lazy" @if($heroImage) poster="{{ $heroImage }}" @endif>
+                                    <source src="{{ $embedSrc }}">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        @elseif($embedType === 'iframe')
+                            <div class="aspect-video w-full max-w-4xl rounded-2xl overflow-hidden shadow-lg bg-black/70" data-element-key="hero.video">
+                                <iframe
+                                    src="{{ $embedSrc }}"
+                                    title="Hero Video"
+                                    frameborder="0"
+                                    allowfullscreen
+                                    class="w-full h-full"
+                                    data-element-key="hero.video.iframe"
+                                    loading="lazy"
                                 ></iframe>
                             </div>
                         @elseif($heroImage)

@@ -13,16 +13,13 @@
                 <div class="flex items-center justify-between h-16 md:h-20">
                     <div class="flex-shrink-0">
                         @if(setting('show_logo_in_header', true))
-                            @php($logo = setting('logo'))
-                            @if($logo)
-                                <a href="/" class="flex items-center">
-                                    <img src="{{ $logo }}" alt="{{ setting('site_name', config('app.name', 'Laravel')) }}" class="h-8 md:h-10 w-auto">
-                                </a>
-                            @else
-                                <a href="/" class="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors duration-150 ease-in-out">
-                                    {{ setting('site_name', config('app.name', 'Laravel')) }}
-                                </a>
-                            @endif
+                            <a href="/" class="flex items-center">
+                                <img src="{{ \App\Facades\Settings::getLogoUrl() }}" alt="{{ setting('site_name', config('app.name', 'Laravel')) }}" class="h-8 md:h-10 w-auto">
+                            </a>
+                        @else
+                            <a href="/" class="text-xl font-bold text-primary-400 hover:text-primary-300 transition-colors duration-150 ease-in-out">
+                                {{ setting('site_name', config('app.name', 'Laravel')) }}
+                            </a>
                         @endif
                     </div>
 

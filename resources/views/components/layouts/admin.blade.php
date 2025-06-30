@@ -8,7 +8,7 @@
                 @if($logo)
                     <flux:brand href="#" :logo="$logo" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
                 @else
-                    <flux:brand href="#" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
+                    <flux:brand href="#" :logo="\App\Facades\Settings::getLogoUrl()" name="{{ \App\Facades\Settings::get('site_name', config('app.name', 'Laravel')) }}" class="px-2" />
                 @endif
             @endif
 
@@ -200,7 +200,7 @@
             </flux:dropdown>
         </flux:header>
 
-        <flux:main container class="max-w-7xl">
+        <flux:main container>
             {{ $slot }}
         </flux:main>
     </div>

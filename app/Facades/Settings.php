@@ -27,4 +27,30 @@ class Settings extends Facade
     {
         return SettingsService::class;
     }
+
+    /**
+     * Get the logo URL, falling back to /logo.png if not set.
+     */
+    public static function getLogoUrl(): string
+    {
+        $logo = static::get('logo');
+        return $logo ?: asset('logo.png');
+    }
+
+    /**
+     * Get the favicon URL, falling back to /favicon.png if not set.
+     */
+    public static function getFaviconUrl(): string
+    {
+        $favicon = static::get('favicon');
+        return $favicon ?: asset('favicon.png');
+    }
+
+    /**
+     * Get the Google Analytics 4 API Secret, if set.
+     */
+    public static function getGoogleAnalyticsApiSecret(): ?string
+    {
+        return static::get('google_analytics_api_secret');
+    }
 }
